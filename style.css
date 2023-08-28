@@ -25,6 +25,11 @@ footer, header, hgroup, menu, nav, section {
 }
 body {
 	line-height: 1;
+	background: linear-gradient(148deg, rgba(131,58,180,1) 0%, rgba(0,0,0,1) 37%, rgba(0,0,0,1) 86%, rgba(105,68,68,1) 100%);
+	min-height: 100vh;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 ol, ul {
 	list-style: none;
