@@ -1,16 +1,18 @@
 import * as PIXI from "pixi.js";
 import constant from "./constant.json";
+import Level from "./components/stage";
 
 class Game {
   app: PIXI.Application;
   constructor() {
     this.app = new PIXI.Application({
-      width: 1024,
-      height: 576,
+      width: constant.WIDTH,
+      height: constant.HEIGHT,
     });
     document.body.appendChild(this.app.view as HTMLCanvasElement);
 
     this.prepareBackground();
+    this.addChildren();
   }
 
   async prepareBackground() {
@@ -20,6 +22,11 @@ class Game {
     sprite.height = 1200;
 
     this.app.stage.addChild(sprite);
+  }
+
+  addChildren() {
+    const level = new Level();
+    this.app.stage.addChild(level.container);
   }
 }
 
