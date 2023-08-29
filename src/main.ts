@@ -1,23 +1,26 @@
 import * as PIXI from "pixi.js";
+import constant from "./constant.json";
 
 class Game {
   app: PIXI.Application;
   constructor() {
     this.app = new PIXI.Application({
-      width: 840,
-      height: 560,
+      width: 1024,
+      height: 576,
     });
+    document.body.appendChild(this.app.view as HTMLCanvasElement);
 
-    this.init();
+    this.prepareBackground();
   }
 
-  init() {
-    document.body.appendChild(this.app.view as HTMLCanvasElement);
-    const graphics = new PIXI.Graphics();
-    graphics.beginFill(0xffffff);
-    graphics.drawRect(0, 0, this.app.view.width, this.app.view.height);
-    this.app.stage.addChild(graphics);
+  async prepareBackground() {
+    const sprite = PIXI.Sprite.from("sky.jpg");
+    sprite.anchor.set(0, constant.DAY_ANCHOR);
+    sprite.width = 1024;
+    sprite.height = 1200;
+
+    this.app.stage.addChild(sprite);
   }
 }
 
-const game = new Game();
+new Game();
