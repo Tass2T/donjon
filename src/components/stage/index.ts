@@ -1,5 +1,5 @@
 import * as PIXI from "pixi.js";
-import constant from "../../constant.json";
+import constant from "../../constant.js";
 
 export default class Level {
   container: PIXI.Container;

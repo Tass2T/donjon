@@ -1,5 +1,5 @@
 import * as PIXI from "pixi.js";
-import constant from "./constant.json";
+import constant from "./constant.js";
 import Level from "./components/stage";
 
 class Game {
@@ -16,10 +16,10 @@ class Game {
   }
 
   async prepareBackground() {
-    const sprite = PIXI.Sprite.from("sky.jpg");
+    const sprite = PIXI.Sprite.from("background.png");
     sprite.anchor.set(0, constant.DAY_ANCHOR);
-    sprite.width = 1024;
-    sprite.height = 1200;
+    sprite.width = constant.WIDTH;
+    sprite.height = constant.HEIGHT;
 
     this.app.stage.addChild(sprite);
   }
