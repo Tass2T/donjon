@@ -10,6 +10,7 @@ export default class Level {
     this.container.addChild(this.groundContainer);
 
     this.setGround();
+    this.setCharacter();
   }
 
   setGround() {
@@ -17,7 +18,6 @@ export default class Level {
     this.groundContainer.y = constant.HEIGHT - (constant.HEIGHT / 100) * 36;
     const groundTexture = PIXI.Texture.from("ground/groundTile.png");
     const nbOfLine = Math.floor(((constant.HEIGHT / 100) * 40) / 30);
-    console.log(nbOfLine);
 
     for (let j = 0; j < nbOfLine; j++) {
       for (let i = 0; i <= 3000; i += 114) {
@@ -30,4 +30,6 @@ export default class Level {
       }
     }
   }
+
+  setCharacter() {}
 }
