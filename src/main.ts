@@ -1,16 +1,18 @@
 import * as PIXI from "pixi.js";
 import constant from "./constant.js";
 import Level from "./components/stage";
+import InputManager from "./inputManager.js";
 
 class Game {
   app: PIXI.Application;
+  inputManager: InputManager;
   constructor() {
     this.app = new PIXI.Application({
       width: constant.WIDTH,
       height: constant.HEIGHT,
     });
     document.body.appendChild(this.app.view as HTMLCanvasElement);
-
+    this.inputManager = new InputManager();
     this.prepareBackground();
     this.addChildren();
   }
