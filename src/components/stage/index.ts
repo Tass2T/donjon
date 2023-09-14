@@ -15,7 +15,7 @@ export default class Level {
   setGround() {
     this.groundContainer.x = -10;
     this.groundContainer.y = constant.HEIGHT - (constant.HEIGHT / 100) * 50;
-    const groundTexture = PIXI.Texture.from("ground/ground_test.png");
+    const groundTexture = PIXI.Texture.from("ground/groundTile.png");
     const nbOfLine = ((constant.HEIGHT / 100) * 50) / 30;
 
     for (let j = 0; j < nbOfLine; j++) {
