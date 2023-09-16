@@ -4,11 +4,14 @@ import constant from "../../constant.js";
 export default class Level {
   container: PIXI.Container;
   groundContainer: PIXI.Container;
+  wallContainer: PIXI.Container;
   constructor() {
     this.container = new PIXI.Container();
     this.groundContainer = new PIXI.Container();
+    this.wallContainer = new PIXI.Container()
+    this.container.addChild(this.wallContainer)
     this.container.addChild(this.groundContainer);
-
+    this.setWalls()
     this.setGround();
     this.setCharacter();
   }
@@ -29,6 +32,24 @@ export default class Level {
         this.groundContainer.addChild(groundSprite);
       }
     }
+  }
+
+  setWalls() {
+    this.wallContainer.x = -40
+    this.wallContainer.y = 0
+    const wallTexture = PIXI.Texture.from("wall/wall.png")
+    const nbOfWall = 3000 / 200
+    
+
+    for (let i = 0; i < nbOfWall; i++) {
+      const wallSprite = PIXI.Sprite.from(wallTexture)
+      wallSprite.x = i * 400
+      wallSprite.height = constant.HEIGHT
+      wallSprite.width = 400
+      this.wallContainer.addChild(wallSprite)
+
+    }
+    
   }
 
   setCharacter() {
