@@ -11,6 +11,7 @@ PixiPlugin.registerPIXI(PIXI);
 class Game {
   app: PIXI.Application;
   inputManager: InputManager;
+  level: Level;
   constructor() {
     this.app = new PIXI.Application({
       width: constant.WIDTH,
@@ -18,6 +19,7 @@ class Game {
     });
     document.body.appendChild(this.app.view as HTMLCanvasElement);
     this.inputManager = new InputManager();
+    this.level = new Level();
 
     // timer section
     this.app.ticker.stop();
@@ -29,26 +31,15 @@ class Game {
       this.update();
     });
 
-    this.prepareBackground();
     this.init();
   }
 
-  async prepareBackground() {
-    const sprite = PIXI.Sprite.from("background.png");
-    sprite.anchor.set(0, constant.DAY_ANCHOR);
-    sprite.width = constant.WIDTH;
-    sprite.height = constant.HEIGHT;
-
-    this.app.stage.addChild(sprite);
-  }
-
   init() {
-    const level = new Level();
-    this.app.stage.addChild(level.container);
+    this.app.stage.addChild(this.level.container);
   }
 
   update() {
-    console.log(this.app.stage.children);
+    this.level.update(this.inputManager.getInputs());
   }
 }
 
