@@ -40,7 +40,6 @@ export default class Player {
       this.directionX = null;
       this.moving = false;
     }
-    console.log(inputs);
     const previousKeys: Array<String> = [];
     inputs.forEach((item) => {
       switch (item) {
