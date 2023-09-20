@@ -5,14 +5,16 @@ import Player from "../Characters/Player.js";
 export default class Level {
   container: PIXI.Container;
   propsContainer: PIXI.Container;
+  groundContainer: PIXI.Container;
   player: Player;
   constructor() {
-    this.player = new Player();
     this.container = new PIXI.Container();
     this.propsContainer = new PIXI.Container();
+    this.groundContainer = new PIXI.Container();
     this.propsContainer.x = -50;
     this.prepareBackground();
     this.prepareProps();
+    this.player = new Player(this.groundContainer.getBounds());
     this.player.setCharacter();
     this.container.addChild(this.player.container);
   }
@@ -44,9 +46,10 @@ export default class Level {
         groundSprite.y = groundOffset + j * 28;
         groundSprite.width = 150;
         groundSprite.height = 150;
-        this.propsContainer.addChild(groundSprite);
+        this.groundContainer?.addChild(groundSprite);
       }
     }
+    this.propsContainer.addChild(this.groundContainer);
   }
 
   setWalls(): void {
