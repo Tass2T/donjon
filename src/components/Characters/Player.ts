@@ -70,32 +70,18 @@ export default class Player {
     if (!inputs.length) {
       this.directionY = null;
       this.directionX = null;
-      this.currentAnim =
-        this.currentAnim === "WALK RIGHT" ? "IDLE" : "IDLE LEFT";
-
-      this.animatedSprite = new PIXI.AnimatedSprite(
-        this.spriteSheet?.animations["idle"]
-      );
-      if (this.currentAnim === "IDLE LEFT") this.animatedSprite.scale.y *= -1;
       this.moving = false;
     }
     const previousKeys: Array<String> = [];
     inputs.forEach((item) => {
       switch (item) {
         case "KeyA":
-          if (!previousKeys.includes("KeyD")) {
-            this.directionX = "LEFT";
-            this.currentAnim = "WALK LEFT";
-            this.moving = true;
-          }
-
+          if (!previousKeys.includes("KeyD")) this.directionX = "LEFT";
+          this.moving = true;
           break;
         case "KeyD":
-          if (!previousKeys.includes("KeyA")) {
-            this.directionX = "RIGHT";
-            this.currentAnim = "WALK RIGHT";
-            this.moving = true;
-          }
+          if (!previousKeys.includes("KeyA")) this.directionX = "RIGHT";
+          this.moving = true;
           break;
         case "KeyW":
           if (!previousKeys.includes("KeyS")) this.directionY = "UP";
