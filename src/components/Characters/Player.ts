@@ -3,23 +3,28 @@ import constant from "../../constant.js";
 
 export default class Player {
   container: PIXI.Container;
+  spriteSheet: PIXI.Spritesheet | null;
   constructor() {
     this.container = new PIXI.Container();
-
-    this.setCharacter();
+    this.spriteSheet = null;
   }
 
-  setCharacter() {
-    const character = new PIXI.Graphics();
-    character.beginFill(0x00ff00);
-    character.drawRect(
-      50,
-      Math.floor(constant.HEIGHT - constant.HEIGHT / 3),
-      80,
-      150
-    );
-    this.container.addChild(character);
+  async setCharacter() {
+    this.spriteSheet = await PIXI.Assets.load("characters/adventurer.json");
+
+    if (this.spriteSheet) {
+      const animatedSprite = new PIXI.AnimatedSprite(
+        this.spriteSheet.animations["idle"]
+      );
+
+      animatedSprite.animationSpeed = 0.1;
+      animatedSprite.anchor.set(0.5);
+      animatedSprite.x = 100;
+      animatedSprite.y = constant.HEIGHT / 1.4;
+      this.container.addChild(animatedSprite);
+      animatedSprite.play();
+    }
   }
 
-  update(inputs: Array<string>) {}
+  update(inputs: Array<String>) {}
 }

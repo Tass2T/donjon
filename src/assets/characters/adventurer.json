@@ -1,0 +1,58 @@
+{
+  "frames": {
+    "idle-right-one": {
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "w": 50,
+        "h": 37
+      },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 50, "h": 37 },
+      "sourceSize": { "w": 50, "h": 37 }
+    },
+    "idle-right-two": {
+      "frame": {
+        "x": 50,
+        "y": 0,
+        "w": 50,
+        "h": 37
+      },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 50, "h": 37 },
+      "sourceSize": { "w": 50, "h": 37 }
+    },
+    "idle-right-three": {
+      "frame": {
+        "x": 100,
+        "y": 0,
+        "w": 50,
+        "h": 37
+      },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 50, "h": 37 },
+      "sourceSize": { "w": 50, "h": 37 }
+    },
+    "idle-right-four": {
+      "frame": {
+        "x": 150,
+        "y": 0,
+        "w": 50,
+        "h": 37
+      },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 50, "h": 37 },
+      "sourceSize": { "w": 50, "h": 37 }
+    }
+  },
+  "animations": {
+    "idle": [
+      "idle-right-one",
+      "idle-right-two",
+      "idle-right-three",
+      "idle-right-four"
+    ]
+  },
+  "meta": {
+    "image": "adventurer.png",
+    "format": "RGBA8888",
+    "size": { "w": 350, "h": 407 },
+    "scale": "0.3"
+  }
+}

@@ -13,6 +13,7 @@ export default class Level {
     this.propsContainer.x = -50;
     this.prepareBackground();
     this.prepareProps();
+    this.player.setCharacter();
     this.container.addChild(this.player.container);
   }
 
@@ -61,7 +62,7 @@ export default class Level {
     }
   }
 
-  update(inputs: Array<string>) {
+  update(inputs: Array<String>) {
     this.player.update(inputs);
   }
 }
