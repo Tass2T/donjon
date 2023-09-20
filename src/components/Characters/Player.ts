@@ -6,7 +6,7 @@ export default class Player {
   spriteSheet: PIXI.Spritesheet | null;
   animatedSprite: PIXI.AnimatedSprite | null;
   directionY: "UP" | "DOWN" | null;
-  directionX: "RIGHT" | "LEFT" | null;
+  directionX: "RIGHT" | "LEFT";
   moving: Boolean;
   constructor() {
     this.container = new PIXI.Container();
@@ -62,15 +62,20 @@ export default class Player {
         default:
           break;
       }
+
       previousKeys.push(item);
     });
+
+    if (!inputs.some((element) => element === "KeyS" || element === "KeyW")) {
+      this.directionY = null;
+    }
   }
 
   moveSprite() {
-    if (this.directionY === "UP") this.animatedSprite.y -= 10;
-    if (this.directionY === "DOWN") this.animatedSprite.y += 10;
-    if (this.directionX === "LEFT") this.animatedSprite.x -= 10;
-    if (this.directionX === "RIGHT") this.animatedSprite.x += 10;
+    if (this.directionY === "UP") this.animatedSprite.y -= 5;
+    if (this.directionY === "DOWN") this.animatedSprite.y += 5;
+    if (this.directionX === "LEFT") this.animatedSprite.x -= 5;
+    if (this.directionX === "RIGHT") this.animatedSprite.x += 5;
   }
 
   update(inputs: Array<String>) {
