@@ -21,18 +21,21 @@ export default class Player {
     this.moving = false;
   }
 
-  isCharacterInbound(): boolean {
+  isCharacterOutbound(direction: String): boolean {
     const playerCoord = this.animatedSprite?.getBounds();
 
-    if (
-      playerCoord.x <= 0 ||
-      playerCoord.x + playerCoord?.width >= constant.WIDTH ||
-      playerCoord.y + playerCoord?.height <= this.groundLocation.y ||
-      playerCoord.y + playerCoord?.height >= constant.HEIGHT
-    )
-      return true;
-
-    return false;
+    switch (direction) {
+      case "UP":
+        return playerCoord.y + playerCoord?.height <= this.groundLocation.y;
+      case "DOWN":
+        return playerCoord.y + playerCoord?.height >= constant.HEIGHT;
+      case "RIGHT":
+        return playerCoord.x + playerCoord?.width >= constant.WIDTH;
+      case "LEFT":
+        return playerCoord.x <= 0;
+      default:
+        return false;
+    }
   }
 
   showCharacterHitbox() {
@@ -72,6 +75,11 @@ export default class Player {
       this.directionX = null;
       this.moving = false;
     }
+
+    if (!inputs.some((element) => element === "KeyS" || element === "KeyW")) {
+      this.directionY = null;
+    }
+
     const previousKeys: Array<String> = [];
     inputs.forEach((item) => {
       switch (item) {
@@ -97,17 +105,17 @@ export default class Player {
 
       previousKeys.push(item);
     });
-
-    if (!inputs.some((element) => element === "KeyS" || element === "KeyW")) {
-      this.directionY = null;
-    }
   }
 
   moveSprite() {
-    if (this.directionY === "UP") this.animatedSprite.y -= 5;
-    if (this.directionY === "DOWN") this.animatedSprite.y += 5;
-    if (this.directionX === "LEFT") this.animatedSprite.x -= 5;
-    if (this.directionX === "RIGHT") this.animatedSprite.x += 5;
+    if (this.directionY === "UP" && !this.isCharacterOutbound("UP"))
+      this.animatedSprite.y -= 5;
+    if (this.directionY === "DOWN" && !this.isCharacterOutbound("DOWN"))
+      this.animatedSprite.y += 5;
+    if (this.directionX === "LEFT" && !this.isCharacterOutbound("LEFT"))
+      this.animatedSprite.x -= 5;
+    if (this.directionX === "RIGHT" && !this.isCharacterOutbound("RIGHT"))
+      this.animatedSprite.x += 5;
   }
 
   update(inputs: Array<String>) {
