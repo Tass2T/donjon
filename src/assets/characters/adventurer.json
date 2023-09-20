@@ -39,6 +39,56 @@
       },
       "spriteSourceSize": { "x": 0, "y": 0, "w": 50, "h": 37 },
       "sourceSize": { "w": 50, "h": 37 }
+    },
+    "walk-right-one": {
+      "frame": {
+        "x": 50,
+        "y": 37,
+        "w": 50,
+        "h": 37
+      },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 50, "h": 37 },
+      "sourceSize": { "w": 50, "h": 37 }
+    },
+    "walk-right-two": {
+      "frame": {
+        "x": 100,
+        "y": 37,
+        "w": 50,
+        "h": 37
+      },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 50, "h": 37 },
+      "sourceSize": { "w": 50, "h": 37 }
+    },
+    "walk-right-three": {
+      "frame": {
+        "x": 150,
+        "y": 37,
+        "w": 50,
+        "h": 37
+      },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 50, "h": 37 },
+      "sourceSize": { "w": 50, "h": 37 }
+    },
+    "walk-right-four": {
+      "frame": {
+        "x": 200,
+        "y": 37,
+        "w": 50,
+        "h": 37
+      },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 50, "h": 37 },
+      "sourceSize": { "w": 50, "h": 37 }
+    },
+    "walk-right-five": {
+      "frame": {
+        "x": 250,
+        "y": 37,
+        "w": 50,
+        "h": 37
+      },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 50, "h": 37 },
+      "sourceSize": { "w": 50, "h": 37 }
     }
   },
   "animations": {
@@ -47,6 +97,13 @@
       "idle-right-two",
       "idle-right-three",
       "idle-right-four"
+    ],
+    "run": [
+      "walk-right-one",
+      "walk-right-two",
+      "walk-right-three",
+      "walk-right-four",
+      "walk-right-five"
     ]
   },
   "meta": {
