@@ -1,7 +1,7 @@
 import * as PIXI from "pixi.js";
 import constant from "./constant.js";
 import Level from "./components/stage";
-import InputManager from "./inputManager.js";
+import InputManager from "./inputs/inputManager.js";
 import gsap from "gsap";
 import { PixiPlugin } from "gsap/all";
 
