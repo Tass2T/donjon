@@ -8,7 +8,10 @@ export default class Player {
   groundLocation: PIXI.Rectangle;
   directionY: "UP" | "DOWN" | null;
   directionX: "RIGHT" | "LEFT";
-  currentAnim: "IDLE" | "IDLE LEFT" | "WALK RIGHT" | "WALK LEFT";
+  nextDirectionX: "RIGHT" | "LEFT";
+  nextDirectionY: "UP" | "DOWN" | null;
+  anim: "idle" | "walk" | "jump" | "attack";
+  nextAnim: "idle" | "walk" | "jump" | "attack";
   moving: Boolean;
   constructor(groundLocation: PIXI.Rectangle) {
     this.container = new PIXI.Container();
@@ -17,8 +20,32 @@ export default class Player {
     this.groundLocation = groundLocation;
     this.directionY = null;
     this.directionX = "RIGHT";
-    this.currentAnim = "IDLE";
+    this.nextDirectionX = "RIGHT";
+    this.nextDirectionY = null;
+    this.anim = "idle";
+    this.nextAnim = "idle";
+
     this.moving = false;
+
+    this.prepareSprites();
+  }
+
+  async prepareSprites() {
+    this.spriteSheet = await PIXI.Assets.load("characters/adventurer.json");
+
+    if (this.spriteSheet) {
+      this.animatedSprite = new PIXI.AnimatedSprite(
+        this.spriteSheet.animations["idle"]
+      );
+
+      this.animatedSprite.animationSpeed = 0.1;
+      this.animatedSprite.anchor.set(0.5);
+      this.animatedSprite.x = 100;
+      this.animatedSprite.y = constant.HEIGHT / 1.4;
+
+      this.container.addChild(this.animatedSprite);
+      this.animatedSprite.play();
+    }
   }
 
   isCharacterOutbound(direction: String): boolean {
@@ -51,28 +78,9 @@ export default class Player {
     this.container.addChild(bounds);
   }
 
-  async setCharacter() {
-    this.spriteSheet = await PIXI.Assets.load("characters/adventurer.json");
-
-    if (!this.spriteSheet) console.error("oops error with loading");
-
-    this.animatedSprite = new PIXI.AnimatedSprite(
-      this.spriteSheet.animations["idle"]
-    );
-
-    this.animatedSprite.animationSpeed = 0.1;
-    this.animatedSprite.anchor.set(0.5);
-    this.animatedSprite.x = 100;
-    this.animatedSprite.y = constant.HEIGHT / 1.4;
-    this.container.addChild(this.animatedSprite);
-    this.animatedSprite.play();
-    // this.showCharacterHitbox();
-  }
-
   resolveInputs(inputs: Array<String>) {
     if (!inputs.length) {
       this.directionY = null;
-      this.directionX = null;
       this.moving = false;
     }
 
@@ -84,19 +92,31 @@ export default class Player {
     inputs.forEach((item) => {
       switch (item) {
         case "KeyA":
-          if (!previousKeys.includes("KeyD")) this.directionX = "LEFT";
+          if (!previousKeys.includes("KeyD")) {
+            this.nextDirectionX = "LEFT";
+            this.nextAnim = "walk";
+          }
           this.moving = true;
           break;
         case "KeyD":
-          if (!previousKeys.includes("KeyA")) this.directionX = "RIGHT";
+          if (!previousKeys.includes("KeyA")) {
+            this.nextDirectionX = "RIGHT";
+            this.nextAnim = "walk";
+          }
           this.moving = true;
           break;
         case "KeyW":
-          if (!previousKeys.includes("KeyS")) this.directionY = "UP";
+          if (!previousKeys.includes("KeyS")) {
+            this.nextDirectionY = "UP";
+            this.nextAnim = "walk";
+          }
           this.moving = true;
           break;
         case "KeyS":
-          if (!previousKeys.includes("KeyW")) this.directionY = "DOWN";
+          if (!previousKeys.includes("KeyW")) {
+            this.nextDirectionY = "DOWN";
+            this.nextAnim = "walk";
+          }
           this.moving = true;
           break;
         default:
@@ -105,6 +125,19 @@ export default class Player {
 
       previousKeys.push(item);
     });
+  }
+
+  resolveAnimation() {
+    if (this.nextAnim !== this.anim) {
+      this.animatedSprite?.textures =
+        this.spriteSheet?.animations[this.nextAnim];
+    }
+
+    if (this.nextDirectionX !== this.directionX) {
+    }
+
+    if (this.nextDirectionX) this.directionX = this.nextDirectionX;
+    if (this.nextAnim) this.anim = this.nextAnim;
   }
 
   moveSprite() {
@@ -119,7 +152,10 @@ export default class Player {
   }
 
   update(inputs: Array<String>) {
-    this.resolveInputs(inputs);
-    if (this.moving) this.moveSprite();
+    if (this.spriteSheet) {
+      this.resolveInputs(inputs);
+      this.resolveAnimation();
+      // if (this.moving) this.moveSprite();
+    }
   }
 }

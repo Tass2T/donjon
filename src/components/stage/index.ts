@@ -15,7 +15,6 @@ export default class Level {
     this.prepareBackground();
     this.prepareProps();
     this.player = new Player(this.groundContainer.getBounds());
-    this.player.setCharacter();
     this.container.addChild(this.player.container);
   }
 
