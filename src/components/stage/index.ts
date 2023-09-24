@@ -61,13 +61,12 @@ export default class Level {
 
   setWalls(): void {
     const wallTexture = PIXI.Texture.from("wall/wall.png");
-    const nbOfWall = constant.LEVEL_WIDTH / 200;
 
-    for (let i = 0; i < nbOfWall; i++) {
+    for (let i = 0; i <= constant.LEVEL_WIDTH; i += 500) {
       const wallSprite = PIXI.Sprite.from(wallTexture);
-      wallSprite.x = i * 400;
+      wallSprite.x = i + 50;
       wallSprite.height = constant.HEIGHT;
-      wallSprite.width = 400;
+      wallSprite.width = 500;
       this.propsContainer.addChild(wallSprite);
     }
   }
