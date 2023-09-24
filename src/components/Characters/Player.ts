@@ -90,34 +90,34 @@ export default class Player {
 
     const previousKeys: Array<String> = [];
     inputs.forEach((item) => {
-      switch (item) {
+      switch (item) {  
         case "KeyA":
           if (!previousKeys.includes("KeyD")) {
-            this.nextDirectionX = "LEFT";
+            this.directionX = "LEFT";
             this.nextAnim = "walk";
+            this.moving = true;
           }
-          this.moving = true;
           break;
         case "KeyD":
           if (!previousKeys.includes("KeyA")) {
-            this.nextDirectionX = "RIGHT";
+            this.directionX = "RIGHT";
             this.nextAnim = "walk";
+            this.moving = true;
           }
-          this.moving = true;
           break;
         case "KeyW":
           if (!previousKeys.includes("KeyS")) {
-            this.nextDirectionY = "UP";
+            this.directionY = "UP";
             this.nextAnim = "walk";
+            this.moving = true;
           }
-          this.moving = true;
           break;
         case "KeyS":
           if (!previousKeys.includes("KeyW")) {
-            this.nextDirectionY = "DOWN";
+            this.directionY = "DOWN";
             this.nextAnim = "walk";
+            this.moving = true;
           }
-          this.moving = true;
           break;
         default:
           break;
@@ -127,18 +127,7 @@ export default class Player {
     });
   }
 
-  resolveAnimation() {
-    if (this.nextAnim !== this.anim) {
-      this.animatedSprite?.textures =
-        this.spriteSheet?.animations[this.nextAnim];
-    }
-
-    if (this.nextDirectionX !== this.directionX) {
-    }
-
-    if (this.nextDirectionX) this.directionX = this.nextDirectionX;
-    if (this.nextAnim) this.anim = this.nextAnim;
-  }
+  resolveAnimation() {}
 
   moveSprite() {
     if (this.directionY === "UP" && !this.isCharacterOutbound("UP"))
@@ -154,8 +143,8 @@ export default class Player {
   update(inputs: Array<String>) {
     if (this.spriteSheet) {
       this.resolveInputs(inputs);
-      this.resolveAnimation();
-      // if (this.moving) this.moveSprite();
+      // this.resolveAnimation();
+      if (this.moving) this.moveSprite();
     }
   }
 }
