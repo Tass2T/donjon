@@ -33,19 +33,27 @@ export default class Level {
     this.setGround();
   }
 
-  setGround(): void {
-    const groundTexture = PIXI.Texture.from("ground/groundTile.png");
+  async setGround(): Promise<void> {
+
+    PIXI.Assets.addBundle('floor', {
+      floor1: "ground/ground1.png",
+      floor2: "ground/ground2.png"
+    })
+    const assets = await PIXI.Assets.loadBundle("floor")
+    
     const nbOfLine = Math.floor(((constant.HEIGHT / 100) * 40) / 30);
     const groundOffset = constant.HEIGHT - (constant.HEIGHT / 100) * 36;
 
     for (let j = 0; j < nbOfLine; j++) {
+      let num = 1 + j
       for (let i = 0; i <= constant.LEVEL_WIDTH ; i += 114) {
-        const groundSprite = PIXI.Sprite.from(groundTexture);
+        const groundSprite = PIXI.Sprite.from(num %2 === 0 ? assets.floor1 : assets.floor2);
         groundSprite.x = i - j * 32;
         groundSprite.y = groundOffset + j * 28;
         groundSprite.width = 150;
         groundSprite.height = 150;
         this.groundContainer?.addChild(groundSprite);
+        num++
       }
     }
     this.propsContainer.addChild(this.groundContainer);
