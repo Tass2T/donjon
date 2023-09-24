@@ -39,7 +39,7 @@ export default class Level {
     const groundOffset = constant.HEIGHT - (constant.HEIGHT / 100) * 36;
 
     for (let j = 0; j < nbOfLine; j++) {
-      for (let i = 0; i <= 3000; i += 114) {
+      for (let i = 0; i <= constant.LEVEL_WIDTH ; i += 114) {
         const groundSprite = PIXI.Sprite.from(groundTexture);
         groundSprite.x = i - j * 32;
         groundSprite.y = groundOffset + j * 28;
@@ -53,7 +53,7 @@ export default class Level {
 
   setWalls(): void {
     const wallTexture = PIXI.Texture.from("wall/wall.png");
-    const nbOfWall = 3000 / 200;
+    const nbOfWall = constant.LEVEL_WIDTH / 200;
 
     for (let i = 0; i < nbOfWall; i++) {
       const wallSprite = PIXI.Sprite.from(wallTexture);
