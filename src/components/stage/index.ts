@@ -70,7 +70,7 @@ export default class Level {
     }
   }
 
-  moveProps = (direction: Number) => {
+  moveProps = (direction: number) => {
     if (direction > 0) {
       this.propsContainer.x -= 5;
       this.container.x -= 2;
