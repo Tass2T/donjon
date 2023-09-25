@@ -40,12 +40,6 @@ export default class Level {
   }
 
   async setGround(): Promise<void> {
-    PIXI.Assets.addBundle("floor", {
-      floor1: "ground/ground1.png",
-      floor2: "ground/ground2.png",
-    });
-    const assets = await PIXI.Assets.loadBundle("floor");
-
     const nbOfLine = 5;
     const groundOffset = constant.HEIGHT * 0.62;
 
@@ -53,7 +47,7 @@ export default class Level {
       let num = 1 + j;
       for (let i = 0; i <= constant.LEVEL_WIDTH; i++) {
         const groundSprite = PIXI.Sprite.from(
-          num % 2 === 0 ? assets.floor1 : assets.floor2
+          num % 2 === 0 ? this.textures.floor1 : this.textures.floor2
         );
         groundSprite.x = 150 * i - j * 50;
         groundSprite.y = groundOffset + j * 43;
@@ -79,6 +73,6 @@ export default class Level {
   }
 
   update(inputs: Array<String>) {
-    this.player.update(inputs);
+    if (this.player) this.player.update(inputs);
   }
 }
