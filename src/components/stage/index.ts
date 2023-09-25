@@ -1,36 +1,43 @@
 import * as PIXI from "pixi.js";
 import constant from "../../constant.js";
 import Player from "../Characters/Player.js";
+import { loadBundle } from "../../utils/loaderUtils.js";
 
 export default class Level {
   container: PIXI.Container;
   propsContainer: PIXI.Container;
   groundContainer: PIXI.Container;
   player: Player;
+  textures: Array<PIXI.Texture> | null
   constructor() {
     this.container = new PIXI.Container();
+    this.textures = null
     this.propsContainer = new PIXI.Container();
+    this.propsContainer.x -= 50
     this.groundContainer = new PIXI.Container();
-    this.propsContainer.x = -50;
-    this.prepareBackground();
-    this.prepareProps();
-    this.player = new Player(this.groundContainer.getBounds());
-    this.container.addChild(this.player.container);
+    this.prepareTextures()
   }
 
-  async prepareBackground() {
-    const sprite = PIXI.Sprite.from("background.png");
-    sprite.width = constant.WIDTH;
-    sprite.height = constant.HEIGHT;
+  async prepareTextures() {
+    this.textures = await loadBundle("stage")
+    this.prepareBackground();
+    this.prepareProps()
+    this.player = new Player(this.groundContainer.getBounds());
+    this.container.addChild(this.player.container);
+    
+  } 
 
+  prepareBackground() {
+    const sprite = PIXI.Sprite.from(this.textures.background);
+    sprite.height = constant.HEIGHT;
     this.container.addChild(sprite);
   }
 
   prepareProps(): void {
-    this.container.addChild(this.propsContainer);
-
+    
     this.setWalls();
     this.setGround();
+    this.container.addChild(this.propsContainer);
   }
 
   async setGround(): Promise<void> {
@@ -59,7 +66,7 @@ export default class Level {
     this.propsContainer.addChild(this.groundContainer);
   }
 
-  setWalls(): void {
+ setWalls(): void {
     const wallTexture = PIXI.Texture.from("wall/wall.png");
 
     for (let i = 0; i <= constant.LEVEL_WIDTH; i += 500) {
