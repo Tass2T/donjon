@@ -90,7 +90,7 @@ export default class Player {
 
     const previousKeys: Array<String> = [];
     inputs.forEach((item) => {
-      switch (item) {  
+      switch (item) {
         case "KeyA":
           if (!previousKeys.includes("KeyD")) {
             this.directionX = "LEFT";
@@ -109,14 +109,12 @@ export default class Player {
           if (!previousKeys.includes("KeyS")) {
             this.directionY = "UP";
             this.nextAnim = "walk";
-            this.moving = true;
           }
           break;
         case "KeyS":
           if (!previousKeys.includes("KeyW")) {
             this.directionY = "DOWN";
             this.nextAnim = "walk";
-            this.moving = true;
           }
           break;
         default:
@@ -134,17 +132,19 @@ export default class Player {
       this.animatedSprite.y -= 5;
     if (this.directionY === "DOWN" && !this.isCharacterOutbound("DOWN"))
       this.animatedSprite.y += 5;
-    if (this.directionX === "LEFT" && !this.isCharacterOutbound("LEFT"))
-      this.animatedSprite.x -= 5;
-    if (this.directionX === "RIGHT" && !this.isCharacterOutbound("RIGHT"))
-      this.animatedSprite.x += 5;
+    if (this.moving) {
+      if (this.directionX === "LEFT" && !this.isCharacterOutbound("LEFT"))
+        this.animatedSprite.x -= 5;
+      if (this.directionX === "RIGHT" && !this.isCharacterOutbound("RIGHT"))
+        this.animatedSprite.x += 5;
+    }
   }
 
   update(inputs: Array<String>) {
     if (this.spriteSheet) {
       this.resolveInputs(inputs);
       // this.resolveAnimation();
-      if (this.moving) this.moveSprite();
+      this.moveSprite();
     }
   }
 }

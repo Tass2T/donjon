@@ -29,7 +29,6 @@ export default class Level {
   prepareBackground() {
     const sprite = PIXI.Sprite.from(this.textures.background);
     sprite.height = constant.HEIGHT;
-    sprite.width = constant.WIDTH;
     this.container.addChild(sprite);
   }
 
@@ -46,19 +45,19 @@ export default class Level {
     });
     const assets = await PIXI.Assets.loadBundle("floor");
 
-    const nbOfLine = Math.floor(((constant.HEIGHT / 100) * 40) / 30);
-    const groundOffset = constant.HEIGHT - (constant.HEIGHT / 100) * 36;
+    const nbOfLine = 5;
+    const groundOffset = constant.HEIGHT * 0.62;
 
     for (let j = 0; j < nbOfLine; j++) {
       let num = 1 + j;
-      for (let i = 0; i <= constant.LEVEL_WIDTH; i += 114) {
+      for (let i = 0; i <= constant.LEVEL_WIDTH; i++) {
         const groundSprite = PIXI.Sprite.from(
           num % 2 === 0 ? assets.floor1 : assets.floor2
         );
-        groundSprite.x = i - j * 32;
-        groundSprite.y = groundOffset + j * 28;
-        groundSprite.width = 150;
-        groundSprite.height = 150;
+        groundSprite.x = 150 * i - j * 50;
+        groundSprite.y = groundOffset + j * 43;
+        groundSprite.width = 200;
+        groundSprite.height = 200;
         this.groundContainer?.addChild(groundSprite);
         num++;
       }
