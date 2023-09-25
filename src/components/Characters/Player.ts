@@ -3,7 +3,7 @@ import constant from "../../constant.js";
 
 export default class Player {
   container: PIXI.Container;
-  spriteSheet: PIXI.Spritesheet | null;
+  spriteSheet: PIXI.Spritesheet;
   animatedSprite: PIXI.AnimatedSprite;
   groundLocation: PIXI.Rectangle;
   directionY: "UP" | "DOWN" | null;
@@ -15,7 +15,6 @@ export default class Player {
   moving: Boolean;
   constructor(groundLocation: PIXI.Rectangle) {
     this.container = new PIXI.Container();
-    this.spriteSheet = null;
     this.groundLocation = groundLocation;
     this.directionY = null;
     this.directionX = "RIGHT";
@@ -81,6 +80,7 @@ export default class Player {
     if (!inputs.length) {
       this.directionY = null;
       this.moving = false;
+      this.nextAnim = "idle";
     }
 
     if (!inputs.some((element) => element === "KeyS" || element === "KeyW")) {
@@ -129,7 +129,14 @@ export default class Player {
       this.animatedSprite.scale.x *= -1;
     }
 
+    if (this.nextAnim !== this.anim) {
+      this.animatedSprite.textures =
+        this.spriteSheet?.animations[this.nextAnim];
+      this.animatedSprite.play();
+    }
+
     this.directionX = this.nextDirectionX;
+    this.anim = this.nextAnim;
   }
 
   moveSprite() {

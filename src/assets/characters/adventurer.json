@@ -98,7 +98,7 @@
       "idle-right-three",
       "idle-right-four"
     ],
-    "run": [
+    "walk": [
       "walk-right-one",
       "walk-right-two",
       "walk-right-three",
