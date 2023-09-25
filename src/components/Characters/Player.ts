@@ -53,7 +53,7 @@ export default class Player {
 
     switch (direction) {
       case "UP":
-        return playerCoord.y + playerCoord?.height <= this.groundLocation.y;
+        return playerCoord.y + playerCoord?.height <= constant.HEIGHT * 0.62;
       case "DOWN":
         return playerCoord.y + playerCoord?.height >= constant.HEIGHT;
       case "RIGHT":

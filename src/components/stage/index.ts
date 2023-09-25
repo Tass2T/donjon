@@ -7,13 +7,13 @@ export default class Level {
   container: PIXI.Container;
   propsContainer: PIXI.Container;
   groundContainer: PIXI.Container;
-  player: Player;
+  player: Player | null;
   textures: Array<PIXI.Texture> | null;
   constructor() {
     this.container = new PIXI.Container();
     this.textures = null;
+    this.player = null;
     this.propsContainer = new PIXI.Container();
-    this.propsContainer.x -= 50;
     this.groundContainer = new PIXI.Container();
     this.prepareTextures();
   }
@@ -36,6 +36,7 @@ export default class Level {
     this.setWalls();
     this.setGround();
     this.container.addChild(this.propsContainer);
+    this.propsContainer.x -= 50;
   }
 
   async setGround(): Promise<void> {
