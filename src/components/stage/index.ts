@@ -7,12 +7,10 @@ export default class Level {
   container: PIXI.Container;
   propsContainer: PIXI.Container;
   groundContainer: PIXI.Container;
-  player: Player | null;
-  textures: Array<PIXI.Texture> | null;
+  player: Player;
+  textures: Array<PIXI.Texture>;
   constructor() {
     this.container = new PIXI.Container();
-    this.textures = null;
-    this.player = null;
     this.propsContainer = new PIXI.Container();
     this.groundContainer = new PIXI.Container();
     this.prepareTextures();
@@ -22,7 +20,7 @@ export default class Level {
     this.textures = await loadBundle("stage");
     this.prepareBackground();
     this.prepareProps();
-    this.player = new Player(this.groundContainer.getBounds());
+    this.player = new Player(this.moveProps);
     this.container.addChild(this.player.container);
   }
 
@@ -45,11 +43,11 @@ export default class Level {
 
     for (let j = 0; j < nbOfLine; j++) {
       let num = 1 + j;
-      for (let i = 0; i <= constant.LEVEL_WIDTH; i++) {
+      for (let i = 0; i <= constant.LEVEL_WIDTH + 450; i += 150) {
         const groundSprite = PIXI.Sprite.from(
           num % 2 === 0 ? this.textures.floor1 : this.textures.floor2
         );
-        groundSprite.x = 150 * i - j * 50;
+        groundSprite.x = i - j * 50;
         groundSprite.y = groundOffset + j * 43;
         groundSprite.width = 200;
         groundSprite.height = 200;
@@ -71,6 +69,16 @@ export default class Level {
       this.propsContainer.addChild(wallSprite);
     }
   }
+
+  moveProps = (direction: Number) => {
+    if (direction > 0) {
+      this.propsContainer.x -= 5;
+      this.container.x -= 2;
+    } else {
+      this.propsContainer.x += 5;
+      this.container.x += 2;
+    }
+  };
 
   update(inputs: Array<String>) {
     if (this.player) this.player.update(inputs);

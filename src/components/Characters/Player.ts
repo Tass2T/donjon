@@ -5,7 +5,6 @@ export default class Player {
   container: PIXI.Container;
   spriteSheet: PIXI.Spritesheet;
   animatedSprite: PIXI.AnimatedSprite;
-  groundLocation: PIXI.Rectangle;
   directionY: "UP" | "DOWN" | null;
   directionX: "RIGHT" | "LEFT";
   nextDirectionX: "RIGHT" | "LEFT";
@@ -13,16 +12,16 @@ export default class Player {
   anim: "idle" | "walk" | "jump" | "attack";
   nextAnim: "idle" | "walk" | "jump" | "attack";
   moving: Boolean;
-  constructor(groundLocation: PIXI.Rectangle) {
+  moveProps: Function;
+  constructor(moveProps: Function) {
     this.container = new PIXI.Container();
-    this.groundLocation = groundLocation;
     this.directionY = null;
     this.directionX = "RIGHT";
     this.nextDirectionX = "RIGHT";
     this.nextDirectionY = null;
     this.anim = "idle";
     this.nextAnim = "idle";
-
+    this.moveProps = moveProps;
     this.moving = false;
 
     this.prepareSprites();
@@ -145,10 +144,29 @@ export default class Player {
     if (this.directionY === "DOWN" && !this.isCharacterOutbound("DOWN"))
       this.animatedSprite.y += 5;
     if (this.moving) {
-      if (this.directionX === "LEFT" && !this.isCharacterOutbound("LEFT"))
-        this.animatedSprite.x -= 5;
-      if (this.directionX === "RIGHT" && !this.isCharacterOutbound("RIGHT"))
-        this.animatedSprite.x += 5;
+      if (this.directionX === "LEFT" && !this.isCharacterOutbound("LEFT")) {
+        if (this.propsShouldMove(-1)) {
+          this.animatedSprite.x -= 2;
+          this.moveProps(-1);
+        } else this.animatedSprite.x -= 5;
+      }
+      if (this.directionX === "RIGHT" && !this.isCharacterOutbound("RIGHT")) {
+        if (this.propsShouldMove(1)) {
+          this.animatedSprite.x += 2;
+          this.moveProps(1);
+        } else this.animatedSprite.x += 5;
+      }
+    }
+  }
+
+  propsShouldMove(direction: number) {
+    if (direction > 0) {
+      return (
+        this.animatedSprite.getBounds().x + this.animatedSprite.width >=
+        constant.WIDTH - constant.WIDTH / 7
+      );
+    } else {
+      return this.animatedSprite.getBounds().x <= constant.WIDTH / 7;
     }
   }
 
