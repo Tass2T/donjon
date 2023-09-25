@@ -4,7 +4,7 @@ import constant from "../../constant.js";
 export default class Player {
   container: PIXI.Container;
   spriteSheet: PIXI.Spritesheet | null;
-  animatedSprite: PIXI.AnimatedSprite | null;
+  animatedSprite: PIXI.AnimatedSprite;
   groundLocation: PIXI.Rectangle;
   directionY: "UP" | "DOWN" | null;
   directionX: "RIGHT" | "LEFT";
@@ -16,7 +16,6 @@ export default class Player {
   constructor(groundLocation: PIXI.Rectangle) {
     this.container = new PIXI.Container();
     this.spriteSheet = null;
-    this.animatedSprite = null;
     this.groundLocation = groundLocation;
     this.directionY = null;
     this.directionX = "RIGHT";
@@ -93,14 +92,14 @@ export default class Player {
       switch (item) {
         case "KeyA":
           if (!previousKeys.includes("KeyD")) {
-            this.directionX = "LEFT";
+            this.nextDirectionX = "LEFT";
             this.nextAnim = "walk";
             this.moving = true;
           }
           break;
         case "KeyD":
           if (!previousKeys.includes("KeyA")) {
-            this.directionX = "RIGHT";
+            this.nextDirectionX = "RIGHT";
             this.nextAnim = "walk";
             this.moving = true;
           }
@@ -125,7 +124,13 @@ export default class Player {
     });
   }
 
-  resolveAnimation() {}
+  resolveAnimation() {
+    if (this.directionX !== this.nextDirectionX) {
+      this.animatedSprite.scale.x *= -1;
+    }
+
+    this.directionX = this.nextDirectionX;
+  }
 
   moveSprite() {
     if (this.directionY === "UP" && !this.isCharacterOutbound("UP"))
@@ -143,7 +148,7 @@ export default class Player {
   update(inputs: Array<String>) {
     if (this.spriteSheet) {
       this.resolveInputs(inputs);
-      // this.resolveAnimation();
+      this.resolveAnimation();
       this.moveSprite();
     }
   }
