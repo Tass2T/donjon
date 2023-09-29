@@ -138,20 +138,20 @@ export default class Player {
     this.anim = this.nextAnim;
   }
 
-  moveSprite() {
+  moveSprite(isLevelBlocked: boolean) {
     if (this.directionY === "UP" && !this.isCharacterOutbound("UP"))
       this.animatedSprite.y -= 5;
     if (this.directionY === "DOWN" && !this.isCharacterOutbound("DOWN"))
       this.animatedSprite.y += 5;
     if (this.moving) {
       if (this.directionX === "LEFT" && !this.isCharacterOutbound("LEFT")) {
-        if (this.propsShouldMove(-1)) {
+        if (this.propsShouldMove(-1) && !isLevelBlocked) {
           this.animatedSprite.x -= 2;
           this.moveProps(-1);
         } else this.animatedSprite.x -= 5;
       }
       if (this.directionX === "RIGHT" && !this.isCharacterOutbound("RIGHT")) {
-        if (this.propsShouldMove(1)) {
+        if (this.propsShouldMove(1) && !isLevelBlocked) {
           this.animatedSprite.x += 2;
           this.moveProps(1);
         } else this.animatedSprite.x += 5;
@@ -170,11 +170,11 @@ export default class Player {
     }
   }
 
-  update(inputs: Array<String>) {
+  update(inputs: Array<String>, isLevelBlocked: boolean) {
     if (this.spriteSheet) {
       this.resolveInputs(inputs);
       this.resolveAnimation();
-      this.moveSprite();
+      this.moveSprite(isLevelBlocked);
     }
   }
 }

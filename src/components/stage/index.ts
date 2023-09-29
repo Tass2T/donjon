@@ -9,7 +9,9 @@ export default class Level {
   groundContainer: PIXI.Container;
   player: Player;
   textures: Array<PIXI.Texture>;
+  blockLevel: Boolean;
   constructor() {
+    this.blockLevel = false;
     this.container = new PIXI.Container();
     this.propsContainer = new PIXI.Container();
     this.groundContainer = new PIXI.Container();
@@ -81,6 +83,6 @@ export default class Level {
   };
 
   update(inputs: Array<String>) {
-    if (this.player) this.player.update(inputs);
+    if (this.player) this.player.update(inputs, this.blockLevel);
   }
 }
