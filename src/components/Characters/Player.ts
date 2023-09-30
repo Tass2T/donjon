@@ -138,7 +138,7 @@ export default class Player {
     this.anim = this.nextAnim;
   }
 
-  moveSprite(isLevelBlocked: boolean) {
+  moveSprite(isLevelBlocked: Boolean) {
     if (this.directionY === "UP" && !this.isCharacterOutbound("UP"))
       this.animatedSprite.y -= 5;
     if (this.directionY === "DOWN" && !this.isCharacterOutbound("DOWN"))
@@ -170,7 +170,7 @@ export default class Player {
     }
   }
 
-  update(inputs: Array<String>, isLevelBlocked: boolean) {
+  update(inputs: Array<String>, isLevelBlocked: Boolean) {
     if (this.spriteSheet) {
       this.resolveInputs(inputs);
       this.resolveAnimation();

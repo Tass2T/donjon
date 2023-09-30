@@ -40,8 +40,8 @@ export default class Level {
   }
 
   async setGround(): Promise<void> {
-    const nbOfLine = 5;
-    const groundOffset = constant.HEIGHT * 0.62;
+    const nbOfLine = 4;
+    const groundOffset = constant.HEIGHT * 0.72;
 
     for (let j = 0; j < nbOfLine; j++) {
       let num = 1 + j;
