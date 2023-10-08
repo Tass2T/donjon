@@ -73,15 +73,26 @@ export default class Level {
     }
   }
 
-  moveProps = (direction: number) => {
+  moveProps = (direction: number) : boolean => {
     if (direction > 0) {
-      this.propsContainer.x -= 5;
+      console.log(this.propsContainer.getBounds());
+      
+     if (this.propsContainer.getBounds().x >= (constant.LEVEL_WIDTH - 150) * -1) {
+       this.propsContainer.x -= 5;
+       return true
+     }
+     
     } else {
-      this.propsContainer.x += 5;
+      if (this.propsContainer.getBounds().x <=  -150) {
+        this.propsContainer.x += 5;
+        return true
+      } 
     }
+    return false
   };
 
   update(inputs: Array<String>) {
+    
     if (this.player) this.player.update(inputs, this.blockLevel);
   }
 }
