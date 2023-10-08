@@ -50,9 +50,9 @@ export default class Player {
 
     switch (direction) {
       case "UP":
-        return playerCoord.y + playerCoord?.height <= constant.HEIGHT * 0.62;
+        return playerCoord.y + playerCoord?.height <= constant.HEIGHT * 0.75;
       case "DOWN":
-        return playerCoord.y + playerCoord?.height >= constant.HEIGHT;
+        return playerCoord.y + playerCoord?.height >= constant.HEIGHT - 5;
       case "RIGHT":
         return playerCoord.x + playerCoord?.width >= constant.WIDTH;
       case "LEFT":
@@ -146,12 +146,12 @@ export default class Player {
     if (this.moving) {
       if (this.directionX === "LEFT" && !this.isCharacterOutbound("LEFT")) {
         if (this.propsShouldMove(-1) && !isLevelBlocked) {
-          this.moveProps(-1);
+         if (!this.moveProps(-1)) this.animatedSprite.x -= 5
         } else this.animatedSprite.x -= 5;
       }
       if (this.directionX === "RIGHT" && !this.isCharacterOutbound("RIGHT")) {
         if (this.propsShouldMove(1) && !isLevelBlocked) {
-          this.moveProps(1);
+          if  (!this.moveProps(1)) this.animatedSprite.x += 5
         } else this.animatedSprite.x += 5;
       }
     }
