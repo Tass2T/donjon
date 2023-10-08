@@ -29,6 +29,7 @@ export default class Level {
   prepareBackground() {
     const sprite = PIXI.Sprite.from(this.textures.background);
     sprite.height = constant.HEIGHT;
+    sprite.width = constant.WIDTH;
     this.container.addChild(sprite);
   }
 
@@ -75,10 +76,8 @@ export default class Level {
   moveProps = (direction: number) => {
     if (direction > 0) {
       this.propsContainer.x -= 5;
-      this.container.x -= 2;
     } else {
       this.propsContainer.x += 5;
-      this.container.x += 2;
     }
   };
 
