@@ -46,7 +46,7 @@ export default class Level {
 
     for (let j = 0; j < nbOfLine; j++) {
       let num = 1 + j;
-      for (let i = 0; i <= constant.LEVEL_WIDTH + 450; i += 150) {
+      for (let i = 0; i <= constant.WIDTH + 450; i += 150) {
         const groundSprite = PIXI.Sprite.from(
           num % 2 === 0 ? this.textures.floor1 : this.textures.floor2
         );
@@ -64,7 +64,7 @@ export default class Level {
   setWalls(): void {
     const wallTexture = PIXI.Texture.from("wall/wall.png");
 
-    for (let i = 0; i <= constant.LEVEL_WIDTH; i += 500) {
+    for (let i = 0; i <= constant.WIDTH; i += 500) {
       const wallSprite = PIXI.Sprite.from(wallTexture);
       wallSprite.x = i + 50;
       wallSprite.height = constant.HEIGHT;
@@ -73,26 +73,19 @@ export default class Level {
     }
   }
 
-  moveProps = (direction: number) : boolean => {
-    if (direction > 0) {
-      console.log(this.propsContainer.getBounds());
-      
-     if (this.propsContainer.getBounds().x >= (constant.LEVEL_WIDTH - 150) * -1) {
-       this.propsContainer.x -= 5;
-       return true
-     }
-     
-    } else {
-      if (this.propsContainer.getBounds().x <=  -150) {
-        this.propsContainer.x += 5;
-        return true
-      } 
+  moveProps = (): boolean => {
+    if (
+      this.propsContainer.getBounds().x >=
+      (constant.LEVEL_WIDTH - 150) * -1
+    ) {
+      this.propsContainer.x -= 5;
+      return true;
     }
-    return false
+
+    return false;
   };
 
   update(inputs: Array<String>) {
-    
     if (this.player) this.player.update(inputs, this.blockLevel);
   }
 }

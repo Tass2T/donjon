@@ -145,13 +145,11 @@ export default class Player {
       this.animatedSprite.y += 5;
     if (this.moving) {
       if (this.directionX === "LEFT" && !this.isCharacterOutbound("LEFT")) {
-        if (this.propsShouldMove(-1) && !isLevelBlocked) {
-         if (!this.moveProps(-1)) this.animatedSprite.x -= 5
-        } else this.animatedSprite.x -= 5;
+        this.animatedSprite.x -= 5;
       }
       if (this.directionX === "RIGHT" && !this.isCharacterOutbound("RIGHT")) {
         if (this.propsShouldMove(1) && !isLevelBlocked) {
-          if  (!this.moveProps(1)) this.animatedSprite.x += 5
+          if (!this.moveProps()) this.animatedSprite.x += 5;
         } else this.animatedSprite.x += 5;
       }
     }

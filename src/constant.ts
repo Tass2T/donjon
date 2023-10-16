@@ -1,5 +1,5 @@
 export default {
   WIDTH: 1152,
   HEIGHT: 648,
-  LEVEL_WIDTH: 6000,
+  LEVEL_WIDTH: 2000,
 };
