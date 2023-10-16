@@ -159,7 +159,7 @@ export default class Player {
     if (direction > 0) {
       return (
         this.animatedSprite.getBounds().x + this.animatedSprite.width >=
-        constant.WIDTH - constant.WIDTH / 7
+        constant.WIDTH - constant.WIDTH / 4
       );
     } else {
       return this.animatedSprite.getBounds().x <= constant.WIDTH / 7;

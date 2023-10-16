@@ -7,14 +7,18 @@ export default class Level {
   container: PIXI.Container;
   propsContainer: PIXI.Container;
   groundContainer: PIXI.Container;
+  wallContainer: PIXI.Container;
   player: Player;
   textures: Array<PIXI.Texture>;
   blockLevel: Boolean;
+  groundTileIndex: number;
   constructor() {
     this.blockLevel = false;
     this.container = new PIXI.Container();
     this.propsContainer = new PIXI.Container();
     this.groundContainer = new PIXI.Container();
+    this.wallContainer = new PIXI.Container();
+    this.groundContainer.sortableChildren = true;
     this.prepareTextures();
   }
 
@@ -46,7 +50,7 @@ export default class Level {
 
     for (let j = 0; j < nbOfLine; j++) {
       let num = 1 + j;
-      for (let i = 0; i <= constant.WIDTH + 450; i += 150) {
+      for (let i = 0; i <= constant.LEVEL_WIDTH + 450; i += 150) {
         const groundSprite = PIXI.Sprite.from(
           num % 2 === 0 ? this.textures.floor1 : this.textures.floor2
         );
@@ -54,8 +58,10 @@ export default class Level {
         groundSprite.y = groundOffset + j * 43;
         groundSprite.width = 200;
         groundSprite.height = 200;
+        groundSprite.zIndex = i;
         this.groundContainer?.addChild(groundSprite);
         num++;
+        this.groundTileIndex = i;
       }
     }
     this.propsContainer.addChild(this.groundContainer);
@@ -64,25 +70,41 @@ export default class Level {
   setWalls(): void {
     const wallTexture = PIXI.Texture.from("wall/wall.png");
 
-    for (let i = 0; i <= constant.WIDTH; i += 500) {
+    for (let i = 0; i <= constant.LEVEL_WIDTH; i += 500) {
       const wallSprite = PIXI.Sprite.from(wallTexture);
       wallSprite.x = i + 50;
       wallSprite.height = constant.HEIGHT;
       wallSprite.width = 500;
-      this.propsContainer.addChild(wallSprite);
+      this.wallContainer.addChild(wallSprite);
     }
+
+    this.propsContainer.addChild(this.wallContainer);
+  }
+
+  moveUnseenGroundTiles(): void {
+    this.groundContainer.children.forEach((tile) => {
+      if (tile.getGlobalPosition().x + 200 <= 0) {
+        tile.x += constant.LEVEL_WIDTH - 200;
+        tile.zIndex = tile.zIndex + 10000;
+
+        this.groundContainer.updateTransform();
+      }
+    });
+  }
+
+  moveUnseenWalls(): void {
+    this.wallContainer.children.forEach((wallSprite) => {
+      if (wallSprite.getGlobalPosition().x + 500 <= 0) {
+        wallSprite.x += constant.LEVEL_WIDTH;
+      }
+    });
   }
 
   moveProps = (): boolean => {
-    if (
-      this.propsContainer.getBounds().x >=
-      (constant.LEVEL_WIDTH - 150) * -1
-    ) {
-      this.propsContainer.x -= 5;
-      return true;
-    }
-
-    return false;
+    this.propsContainer.x -= 5;
+    this.moveUnseenGroundTiles();
+    this.moveUnseenWalls();
+    return true;
   };
 
   update(inputs: Array<String>) {
