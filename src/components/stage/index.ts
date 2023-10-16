@@ -10,10 +10,10 @@ export default class Level {
   wallContainer: PIXI.Container;
   player: Player;
   textures: Array<PIXI.Texture>;
-  blockLevel: Boolean;
+  isLevelBlocked: Boolean;
   groundTileIndex: number;
   constructor() {
-    this.blockLevel = false;
+    this.isLevelBlocked = false;
     this.container = new PIXI.Container();
     this.propsContainer = new PIXI.Container();
     this.groundContainer = new PIXI.Container();
@@ -107,7 +107,101 @@ export default class Level {
     return true;
   };
 
+  resolveInputs(inputs: Array<String>) {
+    if (!inputs.length) {
+      this.player.directionY = null;
+      this.player.moving = false;
+      this.player.nextAnim = "idle";
+    }
+
+    if (!inputs.some((element) => element === "KeyS" || element === "KeyW")) {
+      this.player.directionY = null;
+    }
+
+    const previousKeys: Array<String> = [];
+    inputs.forEach((item) => {
+      switch (item) {
+        case "KeyA":
+          if (!previousKeys.includes("KeyD")) {
+            this.player.nextDirectionX = "LEFT";
+            this.player.nextAnim = "walk";
+            this.player.moving = true;
+          }
+          break;
+        case "KeyD":
+          if (!previousKeys.includes("KeyA")) {
+            this.player.nextDirectionX = "RIGHT";
+            this.player.nextAnim = "walk";
+            this.player.moving = true;
+          }
+          break;
+        case "KeyW":
+          if (!previousKeys.includes("KeyS")) {
+            this.player.directionY = "UP";
+            this.player.nextAnim = "walk";
+          }
+          break;
+        case "KeyS":
+          if (!previousKeys.includes("KeyW")) {
+            this.player.directionY = "DOWN";
+            this.player.nextAnim = "walk";
+          }
+          break;
+        default:
+          break;
+      }
+
+      previousKeys.push(item);
+    });
+  }
+
+  resolveAnimation() {
+    if (this.player.directionX !== this.player.nextDirectionX) {
+      this.player.animatedSprite.scale.x *= -1;
+    }
+
+    if (this.player.nextAnim !== this.player.anim) {
+      this.player.animatedSprite.textures =
+        this.player.spriteSheet?.animations[this.player.nextAnim];
+      this.player.animatedSprite.play();
+    }
+
+    this.player.directionX = this.player.nextDirectionX;
+    this.player.anim = this.player.nextAnim;
+  }
+
+  moveSprite() {
+    if (
+      this.player.directionY === "UP" &&
+      !this.player.isCharacterOutbound("UP")
+    )
+      this.player.animatedSprite.y -= 5;
+    if (
+      this.player.directionY === "DOWN" &&
+      !this.player.isCharacterOutbound("DOWN")
+    )
+      this.player.animatedSprite.y += 5;
+    if (this.player.moving) {
+      if (
+        this.player.directionX === "LEFT" &&
+        !this.player.isCharacterOutbound("LEFT")
+      ) {
+        this.player.animatedSprite.x -= 5;
+      }
+      if (
+        this.player.directionX === "RIGHT" &&
+        !this.player.isCharacterOutbound("RIGHT")
+      ) {
+        if (this.player.propsShouldMove(1) && !this.isLevelBlocked) {
+          if (!this.moveProps()) this.player.animatedSprite.x += 5;
+        } else this.player.animatedSprite.x += 5;
+      }
+    }
+  }
+
   update(inputs: Array<String>) {
-    if (this.player) this.player.update(inputs, this.blockLevel);
+    this.resolveInputs(inputs);
+    this.resolveAnimation();
+    this.moveSprite();
   }
 }

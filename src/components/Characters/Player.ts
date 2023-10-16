@@ -85,74 +85,6 @@ export default class Player {
     if (!inputs.some((element) => element === "KeyS" || element === "KeyW")) {
       this.directionY = null;
     }
-
-    const previousKeys: Array<String> = [];
-    inputs.forEach((item) => {
-      switch (item) {
-        case "KeyA":
-          if (!previousKeys.includes("KeyD")) {
-            this.nextDirectionX = "LEFT";
-            this.nextAnim = "walk";
-            this.moving = true;
-          }
-          break;
-        case "KeyD":
-          if (!previousKeys.includes("KeyA")) {
-            this.nextDirectionX = "RIGHT";
-            this.nextAnim = "walk";
-            this.moving = true;
-          }
-          break;
-        case "KeyW":
-          if (!previousKeys.includes("KeyS")) {
-            this.directionY = "UP";
-            this.nextAnim = "walk";
-          }
-          break;
-        case "KeyS":
-          if (!previousKeys.includes("KeyW")) {
-            this.directionY = "DOWN";
-            this.nextAnim = "walk";
-          }
-          break;
-        default:
-          break;
-      }
-
-      previousKeys.push(item);
-    });
-  }
-
-  resolveAnimation() {
-    if (this.directionX !== this.nextDirectionX) {
-      this.animatedSprite.scale.x *= -1;
-    }
-
-    if (this.nextAnim !== this.anim) {
-      this.animatedSprite.textures =
-        this.spriteSheet?.animations[this.nextAnim];
-      this.animatedSprite.play();
-    }
-
-    this.directionX = this.nextDirectionX;
-    this.anim = this.nextAnim;
-  }
-
-  moveSprite(isLevelBlocked: Boolean) {
-    if (this.directionY === "UP" && !this.isCharacterOutbound("UP"))
-      this.animatedSprite.y -= 5;
-    if (this.directionY === "DOWN" && !this.isCharacterOutbound("DOWN"))
-      this.animatedSprite.y += 5;
-    if (this.moving) {
-      if (this.directionX === "LEFT" && !this.isCharacterOutbound("LEFT")) {
-        this.animatedSprite.x -= 5;
-      }
-      if (this.directionX === "RIGHT" && !this.isCharacterOutbound("RIGHT")) {
-        if (this.propsShouldMove(1) && !isLevelBlocked) {
-          if (!this.moveProps()) this.animatedSprite.x += 5;
-        } else this.animatedSprite.x += 5;
-      }
-    }
   }
 
   propsShouldMove(direction: number) {
@@ -166,11 +98,5 @@ export default class Player {
     }
   }
 
-  update(inputs: Array<String>, isLevelBlocked: Boolean) {
-    if (this.spriteSheet) {
-      this.resolveInputs(inputs);
-      this.resolveAnimation();
-      this.moveSprite(isLevelBlocked);
-    }
-  }
+  update() {}
 }
