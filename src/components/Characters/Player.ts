@@ -32,6 +32,7 @@ export default class Player {
 
     if (this.spriteSheet) {
       this.animatedSprite = new PIXI.AnimatedSprite(
+        // @ts-ignore
         this.spriteSheet.animations["idle"]
       );
 

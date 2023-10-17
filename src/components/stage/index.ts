@@ -9,7 +9,7 @@ export default class Level {
   groundContainer: PIXI.Container;
   wallContainer: PIXI.Container;
   player: Player;
-  textures: Array<PIXI.Texture>;
+  textures: PIXI.Texture<PIXI.Resource>[];
   isLevelBlocked: Boolean;
   groundTileIndex: number;
   constructor() {
@@ -31,6 +31,8 @@ export default class Level {
   }
 
   prepareBackground() {
+    console.log(this.textures);
+
     const sprite = PIXI.Sprite.from(this.textures.background);
     sprite.height = constant.HEIGHT;
     sprite.width = constant.WIDTH;
@@ -52,6 +54,7 @@ export default class Level {
       let num = 1 + j;
       for (let i = 0; i <= constant.LEVEL_WIDTH + 450; i += 150) {
         const groundSprite = PIXI.Sprite.from(
+          // @ts-ignore
           num % 2 === 0 ? this.textures.floor1 : this.textures.floor2
         );
         groundSprite.x = i - j * 50;
@@ -162,6 +165,7 @@ export default class Level {
 
     if (this.player.nextAnim !== this.player.anim) {
       this.player.animatedSprite.textures =
+        // @ts-ignore
         this.player.spriteSheet?.animations[this.player.nextAnim];
       this.player.animatedSprite.play();
     }
