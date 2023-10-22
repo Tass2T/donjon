@@ -1,5 +1,5 @@
 import * as PIXI from "pixi.js";
-import constant from "./constant.js";
+import config from "./config.js";
 import Level from "./components/stage";
 import InputManager from "./inputManager.js";
 
@@ -9,8 +9,8 @@ class Game {
   level: Level;
   constructor() {
     this.app = new PIXI.Application({
-      width: constant.WIDTH,
-      height: constant.HEIGHT,
+      width: config.WIDTH,
+      height: config.HEIGHT,
     });
     document.body.appendChild(this.app.view as HTMLCanvasElement);
     this.inputManager = new InputManager();

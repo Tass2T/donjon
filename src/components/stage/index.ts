@@ -1,5 +1,5 @@
 import * as PIXI from "pixi.js";
-import constant from "../../constant.js";
+import config from "../../config.js";
 import Player from "../Characters/Player.js";
 import { loadBundle } from "../../utils/loaderUtils.js";
 
@@ -32,8 +32,8 @@ export default class Level {
 
   prepareBackground() {
     const sprite = PIXI.Sprite.from(this.textures.background);
-    sprite.height = constant.HEIGHT;
-    sprite.width = constant.WIDTH;
+    sprite.height = config.HEIGHT;
+    sprite.width = config.WIDTH;
     this.container.addChild(sprite);
   }
 
@@ -46,11 +46,11 @@ export default class Level {
 
   async setGround(): Promise<void> {
     const nbOfLine = 4;
-    const groundOffset = constant.HEIGHT * 0.72;
+    const groundOffset = config.HEIGHT * 0.72;
 
     for (let j = 0; j < nbOfLine; j++) {
       let num = 1 + j;
-      for (let i = 0; i <= constant.LEVEL_WIDTH + 450; i += 150) {
+      for (let i = 0; i <= config.LEVEL_WIDTH + 450; i += 150) {
         const groundSprite = PIXI.Sprite.from(
           // @ts-ignore
           num % 2 === 0 ? this.textures.floor1 : this.textures.floor2
@@ -71,10 +71,10 @@ export default class Level {
   setWalls(): void {
     const wallTexture = PIXI.Texture.from("wall/wall.png");
 
-    for (let i = 0; i <= constant.LEVEL_WIDTH; i += 500) {
+    for (let i = 0; i <= config.LEVEL_WIDTH; i += 500) {
       const wallSprite = PIXI.Sprite.from(wallTexture);
       wallSprite.x = i + 50;
-      wallSprite.height = constant.HEIGHT;
+      wallSprite.height = config.HEIGHT;
       wallSprite.width = 500;
       this.wallContainer.addChild(wallSprite);
     }
@@ -85,7 +85,7 @@ export default class Level {
   moveUnseenGroundTiles(): void {
     this.groundContainer.children.forEach((tile) => {
       if (tile.getGlobalPosition().x + 200 <= 0) {
-        tile.x += constant.LEVEL_WIDTH - 200;
+        tile.x += config.LEVEL_WIDTH - 200;
         tile.zIndex = tile.zIndex + 10000;
 
         this.groundContainer.updateTransform();
@@ -96,7 +96,7 @@ export default class Level {
   moveUnseenWalls(): void {
     this.wallContainer.children.forEach((wallSprite) => {
       if (wallSprite.getGlobalPosition().x + 500 <= 0) {
-        wallSprite.x += constant.LEVEL_WIDTH;
+        wallSprite.x += config.LEVEL_WIDTH;
       }
     });
   }

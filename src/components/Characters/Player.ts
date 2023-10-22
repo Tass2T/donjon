@@ -1,5 +1,5 @@
 import * as PIXI from "pixi.js";
-import constant from "../../constant.js";
+import config from "../../config.js";
 
 export default class Player {
   container: PIXI.Container;
@@ -39,7 +39,7 @@ export default class Player {
       this.animatedSprite.animationSpeed = 0.1;
       this.animatedSprite.anchor.set(0.5);
       this.animatedSprite.x = 100;
-      this.animatedSprite.y = constant.HEIGHT / 1.4;
+      this.animatedSprite.y = config.HEIGHT / 1.4;
 
       this.container.addChild(this.animatedSprite);
       this.animatedSprite.play();
@@ -51,11 +51,11 @@ export default class Player {
 
     switch (direction) {
       case "UP":
-        return playerCoord.y + playerCoord?.height <= constant.HEIGHT * 0.75;
+        return playerCoord.y + playerCoord?.height <= config.HEIGHT * 0.75;
       case "DOWN":
-        return playerCoord.y + playerCoord?.height >= constant.HEIGHT - 5;
+        return playerCoord.y + playerCoord?.height >= config.HEIGHT - 5;
       case "RIGHT":
-        return playerCoord.x + playerCoord?.width >= constant.WIDTH;
+        return playerCoord.x + playerCoord?.width >= config.WIDTH;
       case "LEFT":
         return playerCoord.x <= 0;
       default:
@@ -92,10 +92,10 @@ export default class Player {
     if (direction > 0) {
       return (
         this.animatedSprite.getBounds().x + this.animatedSprite.width >=
-        constant.WIDTH - constant.WIDTH / 4
+        config.WIDTH - config.WIDTH / 4
       );
     } else {
-      return this.animatedSprite.getBounds().x <= constant.WIDTH / 7;
+      return this.animatedSprite.getBounds().x <= config.WIDTH / 7;
     }
   }
 
