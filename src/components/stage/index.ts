@@ -31,8 +31,6 @@ export default class Level {
   }
 
   prepareBackground() {
-    console.log(this.textures);
-
     const sprite = PIXI.Sprite.from(this.textures.background);
     sprite.height = constant.HEIGHT;
     sprite.width = constant.WIDTH;
@@ -204,8 +202,10 @@ export default class Level {
   }
 
   update(inputs: Array<String>) {
-    this.resolveInputs(inputs);
-    this.resolveAnimation();
-    this.moveSprite();
+    if (this.player && this.player.animatedSprite) {
+      this.resolveInputs(inputs);
+      this.resolveAnimation();
+      this.moveSprite();
+    }
   }
 }
