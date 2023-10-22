@@ -2,6 +2,7 @@ import * as PIXI from "pixi.js";
 import config from "../../config.js";
 import Player from "../Characters/Player.js";
 import { loadBundle } from "../../utils/loaderUtils.js";
+import * as Matter from "matter-js";
 
 export default class Level {
   container: PIXI.Container;
@@ -12,6 +13,7 @@ export default class Level {
   textures: PIXI.Texture<PIXI.Resource>[];
   isLevelBlocked: Boolean;
   groundTileIndex: number;
+  physicEngine: Matter.Engine;
   constructor() {
     this.container = new PIXI.Container();
     this.propsContainer = new PIXI.Container();
