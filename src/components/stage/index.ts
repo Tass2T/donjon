@@ -13,12 +13,12 @@ export default class Level {
   isLevelBlocked: Boolean;
   groundTileIndex: number;
   constructor() {
-    this.isLevelBlocked = false;
     this.container = new PIXI.Container();
     this.propsContainer = new PIXI.Container();
     this.groundContainer = new PIXI.Container();
     this.wallContainer = new PIXI.Container();
     this.groundContainer.sortableChildren = true;
+    this.isLevelBlocked = false;
     this.prepareTextures();
   }
 
