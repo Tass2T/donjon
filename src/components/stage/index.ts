@@ -122,6 +122,9 @@ export default class Level {
     const previousKeys: Array<String> = [];
     inputs.forEach((item) => {
       switch (item) {
+        case "Space":
+          console.log("jumping");
+          break;
         case "KeyA":
           if (!previousKeys.includes("KeyD")) {
             this.player.nextDirectionX = "LEFT";

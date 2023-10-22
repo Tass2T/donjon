@@ -13,6 +13,7 @@ export default class Player {
   nextAnim: "idle" | "walk" | "jump" | "attack";
   moving: Boolean;
   moveProps: Function;
+  isJumping: Boolean;
   constructor(moveProps: Function) {
     this.container = new PIXI.Container();
     this.directionY = null;
@@ -23,6 +24,7 @@ export default class Player {
     this.nextAnim = "idle";
     this.moveProps = moveProps;
     this.moving = false;
+    this.isJumping = false;
 
     this.prepareSprites();
   }
