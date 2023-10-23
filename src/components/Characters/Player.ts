@@ -1,10 +1,13 @@
 import * as PIXI from "pixi.js";
 import config from "../../config.js";
+import * as Matter from "matter-js";
 
 export default class Player {
   container: PIXI.Container;
   spriteSheet: PIXI.Spritesheet;
   animatedSprite: PIXI.AnimatedSprite;
+  playerPhysicalBody: Matter.Body;
+  platformPhysic: Matter.Body;
   directionY: "UP" | "DOWN" | null;
   directionX: "RIGHT" | "LEFT";
   nextDirectionX: "RIGHT" | "LEFT";
@@ -14,7 +17,8 @@ export default class Player {
   moving: Boolean;
   moveProps: Function;
   isJumping: Boolean;
-  constructor(moveProps: Function) {
+  physicEngine: Matter.Engine;
+  constructor(moveProps: Function, physicEngine: Matter.Engine) {
     this.container = new PIXI.Container();
     this.directionY = null;
     this.directionX = "RIGHT";
@@ -25,6 +29,7 @@ export default class Player {
     this.moveProps = moveProps;
     this.moving = false;
     this.isJumping = false;
+    this.physicEngine = physicEngine;
 
     this.prepareSprites();
   }
@@ -45,6 +50,23 @@ export default class Player {
 
       this.container.addChild(this.animatedSprite);
       this.animatedSprite.play();
+
+      this.playerPhysicalBody = Matter.Bodies.rectangle(
+        this.animatedSprite.x,
+        this.animatedSprite.y,
+        this.animatedSprite.width,
+        this.animatedSprite.height
+      );
+
+      this.platformPhysic = Matter.Bodies.rectangle(
+        this.animatedSprite.x - this.animatedSprite.width / 2,
+        this.animatedSprite.y + this.animatedSprite.height / 2,
+        this.animatedSprite.width,
+        10
+      );
+
+      Matter.World.add(this.physicEngine.world, this.playerPhysicalBody);
+      Matter.World.add(this.physicEngine.world, this.platformPhysic);
     }
   }
 
@@ -100,6 +122,8 @@ export default class Player {
       return this.animatedSprite.getBounds().x <= config.WIDTH / 7;
     }
   }
+
+  synchronizeAssetsAndBodies() {}
 
   update() {}
 }

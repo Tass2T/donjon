@@ -21,6 +21,9 @@ export default class Level {
     this.wallContainer = new PIXI.Container();
     this.groundContainer.sortableChildren = true;
     this.isLevelBlocked = false;
+    this.physicEngine = Matter.Engine.create();
+    const runner = Matter.Runner.create();
+    Matter.Runner.run(runner, this.physicEngine);
     this.prepareTextures();
   }
 
@@ -28,7 +31,7 @@ export default class Level {
     this.textures = await loadBundle("stage");
     this.prepareBackground();
     this.prepareProps();
-    this.player = new Player(this.moveProps);
+    this.player = new Player(this.moveProps, this.physicEngine);
     this.container.addChild(this.player.container);
   }
 
@@ -211,6 +214,8 @@ export default class Level {
       this.resolveInputs(inputs);
       this.resolveAnimation();
       this.moveSprite();
+
+      this.player.update();
     }
   }
 }
