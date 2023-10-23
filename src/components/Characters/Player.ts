@@ -123,7 +123,20 @@ export default class Player {
     }
   }
 
-  synchronizeAssetsAndBodies() {}
+  synchronizeBodiesToAssets() {
+    this.playerPhysicalBody.position.x = this.animatedSprite.x;
+    this.playerPhysicalBody.position.y = this.animatedSprite.y;
+    this.platformPhysic.position.x = this.animatedSprite.x;
+  }
 
-  update() {}
+  synchronizeAssetsToBodies() {
+    this.animatedSprite.x = this.playerPhysicalBody.position.x;
+    this.animatedSprite.y = this.playerPhysicalBody.position.y;
+    this.platformPhysic.position.x = this.animatedSprite.x;
+  }
+
+  update() {
+    if (!this.isJumping) this.synchronizeBodiesToAssets();
+    else this.synchronizeAssetsToBodies();
+  }
 }
