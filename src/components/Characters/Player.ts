@@ -1,10 +1,13 @@
 import * as PIXI from "pixi.js";
-import constant from "../../constant.js";
+import config from "../../config.js";
+import * as Matter from "matter-js";
 
 export default class Player {
   container: PIXI.Container;
   spriteSheet: PIXI.Spritesheet;
   animatedSprite: PIXI.AnimatedSprite;
+  playerPhysicalBody: Matter.Body;
+  platformPhysic: Matter.Body;
   directionY: "UP" | "DOWN" | null;
   directionX: "RIGHT" | "LEFT";
   nextDirectionX: "RIGHT" | "LEFT";
@@ -13,7 +16,9 @@ export default class Player {
   nextAnim: "idle" | "walk" | "jump" | "attack";
   moving: Boolean;
   moveProps: Function;
-  constructor(moveProps: Function) {
+  isJumping: Boolean;
+  physicEngine: Matter.Engine;
+  constructor(moveProps: Function, physicEngine: Matter.Engine) {
     this.container = new PIXI.Container();
     this.directionY = null;
     this.directionX = "RIGHT";
@@ -23,6 +28,8 @@ export default class Player {
     this.nextAnim = "idle";
     this.moveProps = moveProps;
     this.moving = false;
+    this.isJumping = false;
+    this.physicEngine = physicEngine;
 
     this.prepareSprites();
   }
@@ -32,16 +39,34 @@ export default class Player {
 
     if (this.spriteSheet) {
       this.animatedSprite = new PIXI.AnimatedSprite(
+        // @ts-ignore
         this.spriteSheet.animations["idle"]
       );
 
       this.animatedSprite.animationSpeed = 0.1;
       this.animatedSprite.anchor.set(0.5);
       this.animatedSprite.x = 100;
-      this.animatedSprite.y = constant.HEIGHT / 1.4;
+      this.animatedSprite.y = config.HEIGHT / 1.4;
 
       this.container.addChild(this.animatedSprite);
       this.animatedSprite.play();
+
+      this.playerPhysicalBody = Matter.Bodies.rectangle(
+        this.animatedSprite.x,
+        this.animatedSprite.y,
+        this.animatedSprite.width,
+        this.animatedSprite.height
+      );
+
+      this.platformPhysic = Matter.Bodies.rectangle(
+        this.animatedSprite.x - this.animatedSprite.width / 2,
+        this.animatedSprite.y + this.animatedSprite.height / 2,
+        this.animatedSprite.width,
+        10
+      );
+
+      Matter.World.add(this.physicEngine.world, this.playerPhysicalBody);
+      Matter.World.add(this.physicEngine.world, this.platformPhysic);
     }
   }
 
@@ -50,11 +75,11 @@ export default class Player {
 
     switch (direction) {
       case "UP":
-        return playerCoord.y + playerCoord?.height <= constant.HEIGHT * 0.75;
+        return playerCoord.y + playerCoord?.height <= config.HEIGHT * 0.75;
       case "DOWN":
-        return playerCoord.y + playerCoord?.height >= constant.HEIGHT - 5;
+        return playerCoord.y + playerCoord?.height >= config.HEIGHT - 5;
       case "RIGHT":
-        return playerCoord.x + playerCoord?.width >= constant.WIDTH;
+        return playerCoord.x + playerCoord?.width >= config.WIDTH;
       case "LEFT":
         return playerCoord.x <= 0;
       default:
@@ -85,94 +110,33 @@ export default class Player {
     if (!inputs.some((element) => element === "KeyS" || element === "KeyW")) {
       this.directionY = null;
     }
-
-    const previousKeys: Array<String> = [];
-    inputs.forEach((item) => {
-      switch (item) {
-        case "KeyA":
-          if (!previousKeys.includes("KeyD")) {
-            this.nextDirectionX = "LEFT";
-            this.nextAnim = "walk";
-            this.moving = true;
-          }
-          break;
-        case "KeyD":
-          if (!previousKeys.includes("KeyA")) {
-            this.nextDirectionX = "RIGHT";
-            this.nextAnim = "walk";
-            this.moving = true;
-          }
-          break;
-        case "KeyW":
-          if (!previousKeys.includes("KeyS")) {
-            this.directionY = "UP";
-            this.nextAnim = "walk";
-          }
-          break;
-        case "KeyS":
-          if (!previousKeys.includes("KeyW")) {
-            this.directionY = "DOWN";
-            this.nextAnim = "walk";
-          }
-          break;
-        default:
-          break;
-      }
-
-      previousKeys.push(item);
-    });
-  }
-
-  resolveAnimation() {
-    if (this.directionX !== this.nextDirectionX) {
-      this.animatedSprite.scale.x *= -1;
-    }
-
-    if (this.nextAnim !== this.anim) {
-      this.animatedSprite.textures =
-        this.spriteSheet?.animations[this.nextAnim];
-      this.animatedSprite.play();
-    }
-
-    this.directionX = this.nextDirectionX;
-    this.anim = this.nextAnim;
-  }
-
-  moveSprite(isLevelBlocked: Boolean) {
-    if (this.directionY === "UP" && !this.isCharacterOutbound("UP"))
-      this.animatedSprite.y -= 5;
-    if (this.directionY === "DOWN" && !this.isCharacterOutbound("DOWN"))
-      this.animatedSprite.y += 5;
-    if (this.moving) {
-      if (this.directionX === "LEFT" && !this.isCharacterOutbound("LEFT")) {
-        if (this.propsShouldMove(-1) && !isLevelBlocked) {
-         if (!this.moveProps(-1)) this.animatedSprite.x -= 5
-        } else this.animatedSprite.x -= 5;
-      }
-      if (this.directionX === "RIGHT" && !this.isCharacterOutbound("RIGHT")) {
-        if (this.propsShouldMove(1) && !isLevelBlocked) {
-          if  (!this.moveProps(1)) this.animatedSprite.x += 5
-        } else this.animatedSprite.x += 5;
-      }
-    }
   }
 
   propsShouldMove(direction: number) {
     if (direction > 0) {
       return (
         this.animatedSprite.getBounds().x + this.animatedSprite.width >=
-        constant.WIDTH - constant.WIDTH / 7
+        config.WIDTH - config.WIDTH / 4
       );
     } else {
-      return this.animatedSprite.getBounds().x <= constant.WIDTH / 7;
+      return this.animatedSprite.getBounds().x <= config.WIDTH / 7;
     }
   }
 
-  update(inputs: Array<String>, isLevelBlocked: Boolean) {
-    if (this.spriteSheet) {
-      this.resolveInputs(inputs);
-      this.resolveAnimation();
-      this.moveSprite(isLevelBlocked);
-    }
+  synchronizeBodiesToAssets() {
+    this.playerPhysicalBody.position.x = this.animatedSprite.x;
+    this.playerPhysicalBody.position.y = this.animatedSprite.y;
+    this.platformPhysic.position.x = this.animatedSprite.x;
+  }
+
+  synchronizeAssetsToBodies() {
+    this.animatedSprite.x = this.playerPhysicalBody.position.x;
+    this.animatedSprite.y = this.playerPhysicalBody.position.y;
+    this.platformPhysic.position.x = this.animatedSprite.x;
+  }
+
+  update() {
+    if (!this.isJumping) this.synchronizeBodiesToAssets();
+    else this.synchronizeAssetsToBodies();
   }
 }

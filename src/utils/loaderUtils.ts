@@ -1,7 +1,10 @@
 import { Assets, Texture } from "pixi.js";
-import textureMap from "../assets/textureMap.json";
 
 export async function loadBundle(bundleName: string): Promise<Texture[]> {
+  const textureFile = await fetch("/textureMap.json");
+  const textureMap = await textureFile.json();
+
+  // @ts-ignore
   Assets.addBundle(bundleName, textureMap[bundleName]);
 
   const response = await Assets.loadBundle(bundleName);

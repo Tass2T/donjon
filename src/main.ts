@@ -1,12 +1,7 @@
 import * as PIXI from "pixi.js";
-import constant from "./constant.js";
+import config from "./config.js";
 import Level from "./components/stage";
 import InputManager from "./inputManager.js";
-import gsap from "gsap";
-import { PixiPlugin } from "gsap/all";
-
-gsap.registerPlugin(PixiPlugin);
-PixiPlugin.registerPIXI(PIXI);
 
 class Game {
   app: PIXI.Application;
@@ -14,16 +9,14 @@ class Game {
   level: Level;
   constructor() {
     this.app = new PIXI.Application({
-      width: constant.WIDTH,
-      height: constant.HEIGHT,
+      width: config.WIDTH,
+      height: config.HEIGHT,
     });
     document.body.appendChild(this.app.view as HTMLCanvasElement);
     this.inputManager = new InputManager();
     this.level = new Level();
 
     // timer section
-    this.app.ticker.stop();
-    gsap.ticker.add(() => this.app.ticker.update());
     let elapsed = 0.0;
     this.app.ticker.maxFPS = 60;
     this.app.ticker.add((delta) => {
