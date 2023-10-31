@@ -66,7 +66,7 @@ export default class Level {
 
     for (let i = 0; i <= constant.LEVEL_WIDTH; i += 500) {
       const wallSprite = PIXI.Sprite.from(wallTexture);
-      wallSprite.x = i + 50;
+      wallSprite.x = i;
       wallSprite.height = constant.HEIGHT;
       wallSprite.width = 500;
       this.propsContainer.addChild(wallSprite);
@@ -75,7 +75,6 @@ export default class Level {
 
   moveProps = (direction: number) : boolean => {
     if (direction > 0) {
-      console.log(this.propsContainer.getBounds());
       
      if (this.propsContainer.getBounds().x >= (constant.LEVEL_WIDTH - 150) * -1) {
        this.propsContainer.x -= 5;
@@ -83,7 +82,7 @@ export default class Level {
      }
      
     } else {
-      if (this.propsContainer.getBounds().x <=  -150) {
+      if (this.propsContainer.getBounds().x <=  -350) {
         this.propsContainer.x += 5;
         return true
       } 
