@@ -12,7 +12,6 @@ export default class Level {
   player: Player;
   textures: PIXI.Texture<PIXI.Resource>[];
   isLevelBlocked: Boolean;
-  groundTileIndex: number;
   physicEngine: Matter.Engine;
   constructor() {
     this.container = new PIXI.Container();
@@ -21,10 +20,14 @@ export default class Level {
     this.wallContainer = new PIXI.Container();
     this.groundContainer.sortableChildren = true;
     this.isLevelBlocked = false;
+    this.initPhysicEngine();
+    this.prepareTextures();
+  }
+
+  initPhysicEngine() {
     this.physicEngine = Matter.Engine.create();
     const runner = Matter.Runner.create();
     Matter.Runner.run(runner, this.physicEngine);
-    this.prepareTextures();
   }
 
   async prepareTextures() {
@@ -67,7 +70,6 @@ export default class Level {
         groundSprite.zIndex = i;
         this.groundContainer?.addChild(groundSprite);
         num++;
-        this.groundTileIndex = i;
       }
     }
     this.propsContainer.addChild(this.groundContainer);
@@ -128,7 +130,10 @@ export default class Level {
     inputs.forEach((item) => {
       switch (item) {
         case "Space":
-          console.log("jumping");
+          if (!this.player.isJumping) {
+            this.player.isJumping = true;
+            this.player.playerPhysicalBody.position.y += 1;
+          }
           break;
         case "KeyA":
           if (!previousKeys.includes("KeyD")) {
