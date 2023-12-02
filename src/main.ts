@@ -1,33 +1,38 @@
-import * as PIXI from "pixi.js";
-import config from "./config.js";
-import Level from "./components/stage";
-import InputManager from "./inputManager.js";
+import * as PIXI from 'pixi.js';
+import Level from './components/stage';
+import InputManager from './inputManager.js';
 
 class Game {
+  scene: HTMLElement | null;
   app: PIXI.Application;
   inputManager: InputManager;
   level: Level;
   constructor() {
-    this.app = new PIXI.Application({
-      width: config.WIDTH,
-      height: config.HEIGHT,
-    });
-    document.body.appendChild(this.app.view as HTMLCanvasElement);
-    this.inputManager = new InputManager();
-    this.level = new Level();
+    this.scene = document.getElementById('scene');
 
-    // timer section
-    let elapsed = 0.0;
-    this.app.ticker.maxFPS = 60;
-    this.app.ticker.add((delta) => {
-      elapsed += delta;
-      this.update();
-    });
+    if (this.scene) {
+      this.app = new PIXI.Application({
+        resizeTo: this.scene,
+      });
 
-    this.init();
+      this.scene.appendChild(this.app.view as HTMLCanvasElement);
+
+      this.inputManager = new InputManager();
+      this.level = new Level();
+
+      // timer section
+      let elapsed = 0.0;
+      this.app.ticker.maxFPS = 60;
+      this.app.ticker.add((delta) => {
+        elapsed += delta;
+        this.update();
+      });
+
+      this.initLevel();
+    }
   }
 
-  init() {
+  initLevel() {
     this.app.stage.addChild(this.level.container);
   }
 
