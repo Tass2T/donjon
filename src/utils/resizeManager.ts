@@ -1,3 +1,5 @@
 export default function resizeManager() {
-  console.log('yo');
+  window.addEventListener("resize", (e) => {
+    console.log(e);
+  });
 }
