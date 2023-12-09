@@ -1,5 +1,5 @@
-import * as PIXI from 'pixi.js';
-import * as Matter from 'matter-js';
+import * as PIXI from "pixi.js";
+import * as Matter from "matter-js";
 
 export default class Player {
   container: PIXI.Container;
@@ -19,11 +19,10 @@ export default class Player {
     const position = this.container.getLocalBounds();
 
     this.physicalBody = Matter.Bodies.rectangle(
-      200,
-      500,
+      300,
+      100,
       position.width,
-      position.height,
-      { isStatic: true }
+      position.height
     );
 
     Matter.World.add(this.physicEngine.world, [this.physicalBody]);
@@ -39,10 +38,11 @@ export default class Player {
   }
 
   update(inputs: Array<String>) {
-    if (inputs.includes('Space')) {
+    if (inputs.includes("Space")) {
       this.jumping = true;
 
-      this.physicalBody.velocity.y += 50;
+      this.physicalBody.force.y -= 0.05;
+      this.physicalBody.force.x += 0.01;
     }
 
     this.syncAssetsWithPhysicalBodies();
