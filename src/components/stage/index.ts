@@ -1,6 +1,7 @@
-import * as PIXI from "pixi.js";
-import * as Matter from "matter-js";
-import Player from "../Characters/Player";
+import * as PIXI from 'pixi.js';
+import * as Matter from 'matter-js';
+import Player from '../Characters/Player';
+import config from '../../config.ts';
 
 export default class Level {
   container: PIXI.Container;
@@ -26,7 +27,7 @@ export default class Level {
 
     const floor = Matter.Bodies.rectangle(
       window.innerWidth / 2,
-      600,
+      config.DEFAULT_FLOOR_POS,
       window.innerWidth,
       100,
       {
@@ -54,7 +55,7 @@ export default class Level {
     );
 
     const rightWall = Matter.Bodies.rectangle(
-      window.innerWidth - 5,
+      window.innerWidth - 10,
       window.innerHeight / 2,
       10,
       window.innerHeight,
@@ -74,10 +75,20 @@ export default class Level {
     Matter.World.add(this.physicEngine.world, this.bounds);
   }
 
-  processInput(inputs: Array<String>) {}
+  processInput(inputs: Array<String>) {
+    inputs.forEach((input) => {
+      switch (input) {
+        case 'Space':
+          this.player.jump();
+          break;
+        default:
+          break;
+      }
+    });
+  }
 
   update(inputs: Array<String>) {
     this.processInput(inputs);
-    this.player.update(inputs);
+    this.player.update();
   }
 }

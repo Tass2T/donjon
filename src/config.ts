@@ -1,5 +1,3 @@
 export default {
-  WIDTH: 1200,
-  HEIGHT: 648,
-  LEVEL_WIDTH: 2000,
+  DEFAULT_FLOOR_POS: window.innerHeight * 0.7,
 };

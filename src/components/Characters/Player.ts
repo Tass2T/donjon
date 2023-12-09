@@ -1,5 +1,6 @@
-import * as PIXI from "pixi.js";
-import * as Matter from "matter-js";
+import * as PIXI from 'pixi.js';
+import * as Matter from 'matter-js';
+import config from '../../config.ts';
 
 export default class Player {
   container: PIXI.Container;
@@ -7,6 +8,7 @@ export default class Player {
   physicEngine: Matter.Engine;
   rect: PIXI.Graphics;
   jumping: boolean;
+  jumpInitialHeight: number;
   constructor(physicEngine: Matter.Engine, parentContainer: PIXI.Container) {
     this.container = new PIXI.Container();
     this.jumping = false;
@@ -20,7 +22,7 @@ export default class Player {
 
     this.physicalBody = Matter.Bodies.rectangle(
       300,
-      100,
+      config.DEFAULT_FLOOR_POS - position.height,
       position.width,
       position.height
     );
@@ -37,14 +39,23 @@ export default class Player {
     this.rect.y = this.physicalBody.position.y;
   }
 
-  update(inputs: Array<String>) {
-    if (inputs.includes("Space")) {
+  jump() {
+    if (!this.jumping) {
+      this.jumpInitialHeight = this.physicalBody.position.y;
+      this.physicalBody.position.y -= 10;
       this.jumping = true;
-
-      this.physicalBody.force.y -= 0.05;
-      this.physicalBody.force.x += 0.01;
     }
+  }
 
+  checkIfIsStillJumping() {
+    if (this.physicalBody.position.y === this.jumpInitialHeight)
+      console.log(this.physicalBody.position.y);
+  }
+
+  update() {
     this.syncAssetsWithPhysicalBodies();
+    if (this.jumping) {
+      this.checkIfIsStillJumping();
+    }
   }
 }
