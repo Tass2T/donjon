@@ -42,14 +42,16 @@ export default class Player {
   jump() {
     if (!this.jumping) {
       this.jumpInitialHeight = this.physicalBody.position.y;
-      this.physicalBody.position.y -= 10;
-      this.jumping = true;
+      this.physicalBody.force.y -= 0.1;
+      window.requestAnimationFrame(() => {
+        this.jumping = true;
+      });
     }
   }
 
   checkIfIsStillJumping() {
     if (this.physicalBody.position.y === this.jumpInitialHeight)
-      console.log(this.physicalBody.position.y);
+      this.jumping = false;
   }
 
   update() {
