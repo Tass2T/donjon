@@ -29,8 +29,9 @@ export default class Player {
       position.width,
       position.height,
       {
-        mass: 30,
+        mass: 10,
         friction: 1,
+        density: 10,
         inertia: Infinity,
       }
     );
@@ -72,7 +73,7 @@ export default class Player {
             : this.directionX === "right"
             ? 0.1
             : 0,
-          -1.1
+          -0.5
         )
       );
       window.requestAnimationFrame(() => {
@@ -81,8 +82,13 @@ export default class Player {
     }
   }
 
-  checkIfIsStillJumping(groundBody: Matter.Body) {
-    if (Matter.Collision.collides(this.physicalBody, groundBody)) {
+  checkIfIsStillJumping() {
+    if (
+      Matter.Collision.collides(
+        this.physicalBody,
+        this.physicEngine.world.bodies.find((item) => item.label === "floor")
+      )
+    ) {
       this.jumping = false;
     }
   }
@@ -95,23 +101,36 @@ export default class Player {
   processMovement() {
     if (!this.directionX || !this.directionY) this.isMoving = false;
 
-    if (!this.jumping) {
-      if (this.directionX) {
-        this.physicalBody.position.x +=
-          this.directionX === "right" ? 0.8 : -0.8;
+    if (!this.isMoving) this.isMoving = true;
+
+    if (!this.jumping && this.isMoving) {
+      if (this.directionX === "right") {
+        this.physicalBody.force.x += 0.07;
+      } else if (this.directionX === "left") {
+        this.physicalBody.force.x -= 0.07;
       }
 
       if (this.directionY) {
-        this.physicalBody.position.y += this.directionY === "up" ? -0.8 : 0.8;
+        const floor = this.physicEngine.world.bodies.find(
+          (item) => item.label === "floor"
+        );
+        if (floor) {
+          floor.isSleeping = false;
+          floor.force.y += this.directionY === "up" ? -0.2 : 0.2;
+          if (this.directionY === "down") this.physicalBody.force.y += 0.1;
+          window.requestAnimationFrame(() => {
+            floor.isSleeping = true;
+          });
+        }
       }
     }
   }
 
-  update(groundBody: Matter.Body) {
+  update() {
     this.processMovement();
     this.syncAssetsWithPhysicalBodies();
     if (this.jumping) {
-      this.checkIfIsStillJumping(groundBody);
+      this.checkIfIsStillJumping();
     }
   }
 }

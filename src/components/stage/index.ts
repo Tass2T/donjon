@@ -29,10 +29,12 @@ export default class Level {
       window.innerWidth / 2,
       config.DEFAULT_FLOOR_POS,
       window.innerWidth,
-      100,
+      10,
       {
-        isStatic: true,
+        isSleeping: true,
         friction: 1,
+        inertia: Infinity,
+        label: "floor",
       }
     );
     const leftWall = Matter.Bodies.rectangle(
@@ -42,25 +44,28 @@ export default class Level {
       window.innerHeight,
       {
         isStatic: true,
+        label: "leftWall",
+        friction: 0,
       }
     );
 
     const ceiling = Matter.Bodies.rectangle(
       window.innerWidth / 2,
-      0,
+      10,
       window.innerWidth,
       10,
       {
         isStatic: true,
+        label: "rightWall",
       }
     );
 
     const rightWall = Matter.Bodies.rectangle(
-      window.innerWidth - 10,
+      window.innerWidth - 30,
       window.innerHeight / 2,
       10,
       window.innerHeight,
-      { isStatic: true }
+      { isStatic: true, label: "rightWall" }
     );
 
     if (this.showBounds) {
@@ -109,17 +114,22 @@ export default class Level {
           }
           break;
         default:
-          console.log(input);
-
           break;
       }
 
       processKeys.push(input);
     });
+
+    if (!processKeys.includes("KeyS") && !processKeys.includes("KeyW")) {
+      this.player.setDirectionY(null);
+    }
+    if (!processKeys.includes("KeyA") && !processKeys.includes("KeyD")) {
+      this.player.setDirectionX(null);
+    }
   }
 
   update(inputs: Array<String>) {
     this.processInput(inputs);
-    this.player.update(this.bounds[0]);
+    this.player.update();
   }
 }
