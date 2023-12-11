@@ -57,8 +57,6 @@ export default class Player {
   }
 
   checkIfIsStillJumping(groundBody: Matter.Body) {
-    console.log(this.physicalBody.position.y, this.jumpInitialHeight);
-
     if (Matter.Collision.collides(this.physicalBody, groundBody)) {
       this.jumping = false;
     }
