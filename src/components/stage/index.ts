@@ -1,7 +1,7 @@
-import * as PIXI from 'pixi.js';
-import * as Matter from 'matter-js';
-import Player from '../Characters/Player';
-import config from '../../config.ts';
+import * as PIXI from "pixi.js";
+import * as Matter from "matter-js";
+import Player from "../Characters/Player";
+import config from "../../config.ts";
 
 export default class Level {
   container: PIXI.Container;
@@ -32,6 +32,7 @@ export default class Level {
       100,
       {
         isStatic: true,
+        friction: 1,
       }
     );
     const leftWall = Matter.Bodies.rectangle(
@@ -78,7 +79,7 @@ export default class Level {
   processInput(inputs: Array<String>) {
     inputs.forEach((input) => {
       switch (input) {
-        case 'Space':
+        case "Space":
           this.player.jump();
           break;
         default:

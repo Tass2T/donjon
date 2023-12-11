@@ -1,6 +1,6 @@
-import * as PIXI from 'pixi.js';
-import * as Matter from 'matter-js';
-import config from '../../config.ts';
+import * as PIXI from "pixi.js";
+import * as Matter from "matter-js";
+import config from "../../config.ts";
 
 export default class Player {
   container: PIXI.Container;
@@ -24,7 +24,10 @@ export default class Player {
       300,
       config.DEFAULT_FLOOR_POS - position.height,
       position.width,
-      position.height
+      position.height,
+      {
+        mass: 20,
+      }
     );
 
     Matter.World.add(this.physicEngine.world, [this.physicalBody]);
@@ -41,8 +44,12 @@ export default class Player {
 
   jump() {
     if (!this.jumping) {
-      this.jumpInitialHeight = this.physicalBody.position.y;
-      this.physicalBody.force.y -= 0.1;
+      this.jumpInitialHeight = Math.floor(this.physicalBody.position.y);
+      Matter.Body.applyForce(
+        this.physicalBody,
+        this.physicalBody.position,
+        Matter.Vector.create(0.4, -0.7)
+      );
       window.requestAnimationFrame(() => {
         this.jumping = true;
       });
@@ -50,8 +57,11 @@ export default class Player {
   }
 
   checkIfIsStillJumping() {
-    if (this.physicalBody.position.y === this.jumpInitialHeight)
+    console.log(this.jumpInitialHeight, this.physicalBody.position.y);
+
+    if (Math.floor(this.physicalBody.position.y) === this.jumpInitialHeight) {
       this.jumping = false;
+    }
   }
 
   update() {
