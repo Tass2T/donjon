@@ -8,7 +8,10 @@ export default class Player {
   physicEngine: Matter.Engine;
   rect: PIXI.Graphics;
   jumping: boolean;
-  jumpInitialHeight: number;
+  directionX: "right" | "left" | null = null;
+  directionY: "up" | "down" | null = null;
+  spriteDirection: "left" | "right";
+  isMoving: Boolean = false;
   constructor(physicEngine: Matter.Engine, parentContainer: PIXI.Container) {
     this.container = new PIXI.Container();
     this.jumping = false;
@@ -26,7 +29,9 @@ export default class Player {
       position.width,
       position.height,
       {
-        mass: 20,
+        mass: 30,
+        friction: 1,
+        inertia: Infinity,
       }
     );
 
@@ -42,13 +47,33 @@ export default class Player {
     this.rect.y = this.physicalBody.position.y;
   }
 
+  setDirectionX(directionX) {
+    if (this.directionX || this.directionY) this.isMoving = true;
+    this.directionX = directionX;
+  }
+
+  setDirectionY(directionY) {
+    if (this.directionX || this.directionY) this.isMoving = true;
+    this.directionY = directionY;
+  }
+
+  setIsMoving(value) {
+    this.isMoving = value;
+  }
+
   jump() {
     if (!this.jumping) {
-      this.jumpInitialHeight = Math.floor(this.physicalBody.position.y);
       Matter.Body.applyForce(
         this.physicalBody,
         this.physicalBody.position,
-        Matter.Vector.create(0, -1.1)
+        Matter.Vector.create(
+          this.directionX === "left"
+            ? -0.1
+            : this.directionX === "right"
+            ? 0.1
+            : 0,
+          -1.1
+        )
       );
       window.requestAnimationFrame(() => {
         this.jumping = true;
@@ -62,7 +87,28 @@ export default class Player {
     }
   }
 
+  resetDirections() {
+    this.directionX = null;
+    this.directionY = null;
+  }
+
+  processMovement() {
+    if (!this.directionX || !this.directionY) this.isMoving = false;
+
+    if (!this.jumping) {
+      if (this.directionX) {
+        this.physicalBody.position.x +=
+          this.directionX === "right" ? 0.8 : -0.8;
+      }
+
+      if (this.directionY) {
+        this.physicalBody.position.y += this.directionY === "up" ? -0.8 : 0.8;
+      }
+    }
+  }
+
   update(groundBody: Matter.Body) {
+    this.processMovement();
     this.syncAssetsWithPhysicalBodies();
     if (this.jumping) {
       this.checkIfIsStillJumping(groundBody);

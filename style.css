@@ -103,7 +103,6 @@ section {
 body {
   line-height: 1;
   height: 100vh;
-  overflow: hidden;
 }
 ol,
 ul {
@@ -117,7 +116,7 @@ blockquote:before,
 blockquote:after,
 q:before,
 q:after {
-  content: '';
+  content: "";
   content: none;
 }
 table {

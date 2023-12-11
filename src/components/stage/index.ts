@@ -8,7 +8,7 @@ export default class Level {
   physicEngine: Matter.Engine;
   player: Player;
   bounds: Array<Matter.Body>;
-  showBounds: Boolean = false;
+  showBounds: Boolean = true;
   constructor() {
     this.container = new PIXI.Container();
     this.initPhysicEngine();
@@ -77,14 +77,44 @@ export default class Level {
   }
 
   processInput(inputs: Array<String>) {
+    const processKeys: Array<String> = [];
+
+    if (!inputs.length) {
+      this.player.resetDirections();
+    }
+
     inputs.forEach((input) => {
       switch (input) {
         case "Space":
           this.player.jump();
           break;
+        case "KeyD":
+          if (!processKeys.includes("KeyD")) {
+            this.player.setDirectionX("right");
+          }
+          break;
+        case "KeyA":
+          if (!processKeys.includes("KeyA")) {
+            this.player.setDirectionX("left");
+          }
+          break;
+        case "KeyW":
+          if (!processKeys.includes("KeyS")) {
+            this.player.setDirectionY("up");
+          }
+          break;
+        case "KeyS":
+          if (!processKeys.includes("KeyW")) {
+            this.player.setDirectionY("down");
+          }
+          break;
         default:
+          console.log(input);
+
           break;
       }
+
+      processKeys.push(input);
     });
   }
 
