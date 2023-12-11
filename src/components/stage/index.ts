@@ -90,6 +90,6 @@ export default class Level {
 
   update(inputs: Array<String>) {
     this.processInput(inputs);
-    this.player.update();
+    this.player.update(this.bounds[0]);
   }
 }

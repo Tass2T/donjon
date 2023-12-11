@@ -48,7 +48,7 @@ export default class Player {
       Matter.Body.applyForce(
         this.physicalBody,
         this.physicalBody.position,
-        Matter.Vector.create(0.4, -0.7)
+        Matter.Vector.create(0, -1.1)
       );
       window.requestAnimationFrame(() => {
         this.jumping = true;
@@ -56,18 +56,18 @@ export default class Player {
     }
   }
 
-  checkIfIsStillJumping() {
-    console.log(this.jumpInitialHeight, this.physicalBody.position.y);
+  checkIfIsStillJumping(groundBody: Matter.Body) {
+    console.log(this.physicalBody.position.y, this.jumpInitialHeight);
 
-    if (Math.floor(this.physicalBody.position.y) === this.jumpInitialHeight) {
+    if (Matter.Collision.collides(this.physicalBody, groundBody)) {
       this.jumping = false;
     }
   }
 
-  update() {
+  update(groundBody: Matter.Body) {
     this.syncAssetsWithPhysicalBodies();
     if (this.jumping) {
-      this.checkIfIsStillJumping();
+      this.checkIfIsStillJumping(groundBody);
     }
   }
 }
