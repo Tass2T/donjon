@@ -114,13 +114,32 @@ export default class Player {
         const floor = this.physicEngine.world.bodies.find(
           (item) => item.label === "floor"
         );
+
         if (floor) {
-          floor.isSleeping = false;
-          floor.force.y += this.directionY === "up" ? -0.2 : 0.2;
-          if (this.directionY === "down") this.physicalBody.force.y += 0.1;
-          window.requestAnimationFrame(() => {
-            floor.isSleeping = true;
-          });
+          if (
+            this.directionY === "up" &&
+            floor.position.y > window.innerHeight * 0.6
+          ) {
+            floor.isSleeping = false;
+            floor.force.y += -0.2;
+
+            window.requestAnimationFrame(() => {
+              floor.isSleeping = true;
+            });
+          } else if (
+            this.directionY === "down" &&
+            floor.position.y < window.innerHeight - 70
+          ) {
+            console.log("hello", window.innerHeight, floor.position.y);
+
+            floor.isSleeping = false;
+            floor.force.y += 0.2;
+            this.physicalBody.force.y += 0.1;
+
+            window.requestAnimationFrame(() => {
+              floor.isSleeping = true;
+            });
+          }
         }
       }
     }
