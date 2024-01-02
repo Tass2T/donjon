@@ -12,6 +12,7 @@ export default class Player {
   directionY: "up" | "down" | null = null;
   spriteDirection: "left" | "right";
   isMoving: Boolean = false;
+  characterFloor: Matter.Body;
   constructor(physicEngine: Matter.Engine, parentContainer: PIXI.Container) {
     this.container = new PIXI.Container();
     this.jumping = false;
@@ -25,7 +26,7 @@ export default class Player {
 
     this.physicalBody = Matter.Bodies.rectangle(
       300,
-      config.DEFAULT_FLOOR_POS - position.height,
+      window.innerHeight * 0.6,
       position.width,
       position.height,
       {
@@ -36,7 +37,20 @@ export default class Player {
       }
     );
 
-    Matter.World.add(this.physicEngine.world, [this.physicalBody]);
+    this.characterFloor = Matter.Bodies.rectangle(
+      this.physicalBody.position.x,
+      this.physicalBody.position.y + position.height,
+      position.width,
+      10,
+      {
+        isSleeping: true,
+      }
+    );
+
+    Matter.World.add(this.physicEngine.world, [
+      this.physicalBody,
+      this.characterFloor,
+    ]);
 
     this.syncAssetsWithPhysicalBodies();
 
@@ -46,6 +60,16 @@ export default class Player {
   syncAssetsWithPhysicalBodies() {
     this.rect.x = this.physicalBody.position.x;
     this.rect.y = this.physicalBody.position.y;
+  }
+
+  syncCharAndFloor() {
+    Matter.Body.setPosition(
+      this.characterFloor,
+      Matter.Vector.create(
+        this.physicalBody.position.x,
+        this.characterFloor.position.y
+      )
+    );
   }
 
   setDirectionX(directionX) {
@@ -83,12 +107,7 @@ export default class Player {
   }
 
   checkIfIsStillJumping() {
-    if (
-      Matter.Collision.collides(
-        this.physicalBody,
-        this.physicEngine.world.bodies.find((item) => item.label === "floor")
-      )
-    ) {
+    if (Matter.Collision.collides(this.physicalBody, this.characterFloor)) {
       this.jumping = false;
     }
   }
@@ -105,40 +124,26 @@ export default class Player {
 
     if (!this.jumping && this.isMoving) {
       if (this.directionX === "right") {
-        this.physicalBody.force.x += 0.07;
+        this.physicalBody.position.x += 1;
       } else if (this.directionX === "left") {
-        this.physicalBody.force.x -= 0.07;
+        this.physicalBody.position.x -= 1;
       }
 
       if (this.directionY) {
-        const floor = this.physicEngine.world.bodies.find(
-          (item) => item.label === "floor"
-        );
+        const floor = this.characterFloor;
 
         if (floor) {
           if (
             this.directionY === "up" &&
             floor.position.y > window.innerHeight * 0.6
           ) {
-            floor.isSleeping = false;
-            floor.force.y += -0.2;
-
-            window.requestAnimationFrame(() => {
-              floor.isSleeping = true;
-            });
+            floor.force.y += -0.3;
           } else if (
             this.directionY === "down" &&
             floor.position.y < window.innerHeight - 70
           ) {
-            console.log("hello", window.innerHeight, floor.position.y);
-
-            floor.isSleeping = false;
             floor.force.y += 0.2;
             this.physicalBody.force.y += 0.1;
-
-            window.requestAnimationFrame(() => {
-              floor.isSleeping = true;
-            });
           }
         }
       }
@@ -146,6 +151,7 @@ export default class Player {
   }
 
   update() {
+    this.syncCharAndFloor();
     this.processMovement();
     this.syncAssetsWithPhysicalBodies();
     if (this.jumping) {

@@ -1,14 +1,13 @@
 import * as PIXI from "pixi.js";
 import * as Matter from "matter-js";
 import Player from "../Characters/Player";
-import config from "../../config.ts";
 
 export default class Level {
   container: PIXI.Container;
   physicEngine: Matter.Engine;
   player: Player;
   bounds: Array<Matter.Body>;
-  showBounds: Boolean = false;
+  showBounds: Boolean = true;
   constructor() {
     this.container = new PIXI.Container();
     this.initPhysicEngine();
@@ -25,18 +24,6 @@ export default class Level {
   initBounds() {
     this.bounds = [];
 
-    const floor = Matter.Bodies.rectangle(
-      window.innerWidth / 2,
-      config.DEFAULT_FLOOR_POS,
-      window.innerWidth,
-      10,
-      {
-        isSleeping: true,
-        friction: 1,
-        inertia: Infinity,
-        label: "floor",
-      }
-    );
     const leftWall = Matter.Bodies.rectangle(
       0,
       window.innerHeight / 2,
@@ -76,7 +63,7 @@ export default class Level {
       Matter.Render.run(render);
     }
 
-    this.bounds.push(floor, leftWall, ceiling, rightWall);
+    this.bounds.push(leftWall, ceiling, rightWall);
 
     Matter.World.add(this.physicEngine.world, this.bounds);
   }
