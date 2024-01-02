@@ -88,9 +88,8 @@ export default class Player {
 
   jump() {
     if (!this.jumping) {
-      Matter.Body.applyForce(
+      Matter.Body.setPosition(
         this.physicalBody,
-        this.physicalBody.position,
         Matter.Vector.create(
           this.directionX === "left"
             ? -0.1

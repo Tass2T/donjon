@@ -1,6 +1,7 @@
-import * as PIXI from 'pixi.js';
-import Level from './components/stage';
-import InputManager from './inputManager.js';
+import * as PIXI from "pixi.js";
+import config from "./config.js";
+import Level from "./components/stage";
+import InputManager from "./inputManager.js";
 
 class Game {
   scene: HTMLElement | null;
@@ -8,11 +9,12 @@ class Game {
   inputManager: InputManager;
   level: Level;
   constructor() {
-    this.scene = document.getElementById('scene');
+    this.scene = document.getElementById("scene");
 
     if (this.scene) {
       this.app = new PIXI.Application({
-        resizeTo: this.scene,
+        height: config.GAME_HEIGHT,
+        width: config.GAME_WIDTH,
       });
 
       this.scene.appendChild(this.app.view as HTMLCanvasElement);

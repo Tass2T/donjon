@@ -1,13 +1,14 @@
 import * as PIXI from "pixi.js";
 import * as Matter from "matter-js";
 import Player from "../Characters/Player";
+import config from "../../config.js";
 
 export default class Level {
   container: PIXI.Container;
   physicEngine: Matter.Engine;
   player: Player;
   bounds: Array<Matter.Body>;
-  showBounds: Boolean = true;
+  showBounds: Boolean = false;
   constructor() {
     this.container = new PIXI.Container();
     this.initPhysicEngine();
@@ -26,9 +27,9 @@ export default class Level {
 
     const leftWall = Matter.Bodies.rectangle(
       0,
-      window.innerHeight / 2,
+      config.GAME_HEIGHT / 2,
       10,
-      window.innerHeight,
+      config.GAME_HEIGHT,
       {
         isStatic: true,
         label: "leftWall",
@@ -37,21 +38,22 @@ export default class Level {
     );
 
     const ceiling = Matter.Bodies.rectangle(
-      window.innerWidth / 2,
-      10,
-      window.innerWidth,
+      config.GAME_WIDTH / 2,
+      0,
+      config.GAME_WIDTH,
       10,
       {
         isStatic: true,
         label: "rightWall",
+        friction: 0,
       }
     );
 
     const rightWall = Matter.Bodies.rectangle(
-      window.innerWidth - 30,
-      window.innerHeight / 2,
+      config.GAME_WIDTH - 60,
+      config.GAME_HEIGHT / 2,
       10,
-      window.innerHeight,
+      config.GAME_HEIGHT,
       { isStatic: true, label: "rightWall" }
     );
 

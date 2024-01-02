@@ -1,3 +1,4 @@
 export default {
-  DEFAULT_FLOOR_POS: window.innerHeight * 0.6,
+  GAME_WIDTH: 1024,
+  GAME_HEIGHT: 900,
 };
