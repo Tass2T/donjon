@@ -14,6 +14,7 @@ export default class Player {
   isMoving: Boolean = false;
   characterFloor: Matter.Body;
   spriteSheet: PIXI.Spritesheet;
+
   constructor(physicEngine: Matter.Engine, parentContainer: PIXI.Container) {
     this.container = new PIXI.Container();
     this.jumping = false;

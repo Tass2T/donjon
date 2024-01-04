@@ -164,6 +164,22 @@ export default class Level {
     return true;
   };
 
+  resolveAnimation() {
+    if (this.player.directionX !== this.player.nextDirectionX) {
+      this.player.animatedSprite.scale.x *= -1;
+    }
+
+    if (this.player.nextAnim !== this.player.anim) {
+      this.player.animatedSprite.textures =
+        // @ts-ignore
+        this.player.spriteSheet?.animations[this.player.nextAnim];
+      this.player.animatedSprite.play();
+    }
+
+    this.player.directionX = this.player.nextDirectionX;
+    this.player.anim = this.player.nextAnim;
+  }
+
   processInput(inputs: Array<String>) {
     const processKeys: Array<String> = [];
 
