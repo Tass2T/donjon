@@ -1,5 +1,5 @@
 export default {
-  SHOW_BOUND: true,
+  SHOW_BOUND: false,
   GAME_WIDTH: 1200,
   GAME_HEIGHT: 720,
   player: {

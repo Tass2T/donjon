@@ -6,7 +6,7 @@ export default class Player {
   container: PIXI.Container;
   physicalBody: Matter.Body;
   physicEngine: Matter.Engine;
-  rect: PIXI.Graphics;
+  visualBody: PIXI.Graphics;
   jumping: boolean;
   directionX: "right" | "left" | null = null;
   directionY: "up" | "down" | null = null;
@@ -17,11 +17,7 @@ export default class Player {
     this.container = new PIXI.Container();
     this.jumping = false;
     this.physicEngine = physicEngine;
-    this.rect = new PIXI.Graphics();
-    this.rect.beginFill(0xff00ff);
-    this.rect.drawRect(0, 0, 50, 50);
-    this.container.addChild(this.rect);
-
+    this.initVisualBody();
     const position = this.container.getLocalBounds();
 
     this.physicalBody = Matter.Bodies.rectangle(
@@ -31,7 +27,6 @@ export default class Player {
       position.height,
       {
         mass: 10,
-        density: 10,
         inertia: Infinity,
       }
     );
@@ -57,9 +52,16 @@ export default class Player {
     parentContainer.addChild(this.container);
   }
 
+  initVisualBody() {
+    this.visualBody = new PIXI.Graphics();
+    this.visualBody.beginFill(0xff00ff);
+    this.visualBody.drawRect(0, 0, 50, 50);
+    this.container.addChild(this.visualBody);
+  }
+
   syncAssetsWithPhysicalBodies() {
-    this.rect.x = this.physicalBody.position.x;
-    this.rect.y = this.physicalBody.position.y;
+    this.visualBody.x = this.physicalBody.position.x;
+    this.visualBody.y = this.physicalBody.position.y;
   }
 
   syncCharAndFloor() {
@@ -81,6 +83,13 @@ export default class Player {
 
   setIsMoving(value) {
     this.isMoving = value;
+  }
+
+  isInBound() {
+    return this.directionY === "up"
+      ? this.visualBody.position.y > config.GAME_HEIGHT * 0.7
+      : this.visualBody.position.y + this.visualBody.height + 10 <
+          config.GAME_HEIGHT * 0.93;
   }
 
   jump() {
@@ -131,7 +140,7 @@ export default class Player {
         });
       }
 
-      if (this.directionY && !this.jumping) {
+      if (this.directionY && !this.jumping && this.isInBound()) {
         const floor = this.characterFloor;
         floor.isSleeping = false;
 
