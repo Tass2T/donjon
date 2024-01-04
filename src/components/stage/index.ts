@@ -2,6 +2,7 @@ import * as PIXI from "pixi.js";
 import * as Matter from "matter-js";
 import Player from "../Characters/Player";
 import config from "../../config.js";
+import { loadBundle } from "../../utils/loaderUtils.js";
 
 export default class Level {
   container: PIXI.Container;
@@ -9,12 +10,14 @@ export default class Level {
   player: Player;
   bounds: Array<Matter.Body>;
   showBounds: Boolean;
+  textures: any;
   constructor() {
     this.showBounds = config.SHOW_BOUND;
     this.container = new PIXI.Container();
     this.initPhysicEngine();
     this.initBounds();
     this.player = new Player(this.physicEngine, this.container);
+    this.prepareTextures();
   }
 
   initPhysicEngine() {
@@ -69,6 +72,19 @@ export default class Level {
     this.bounds.push(leftWall, ceiling, rightWall);
 
     Matter.World.add(this.physicEngine.world, this.bounds);
+  }
+
+  async prepareTextures() {
+    this.textures = await loadBundle("stage");
+    this.prepareBackground();
+    this.container.addChild(this.player.container);
+  }
+
+  prepareBackground() {
+    const sprite = PIXI.Sprite.from(this.textures.background);
+    sprite.height = config.GAME_HEIGHT;
+    sprite.width = config.GAME_WIDTH;
+    this.container.addChild(sprite);
   }
 
   processInput(inputs: Array<String>) {
