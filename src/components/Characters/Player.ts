@@ -31,7 +31,6 @@ export default class Player {
       position.height,
       {
         mass: 10,
-        friction: 1,
         density: 10,
         inertia: Infinity,
       }
@@ -44,6 +43,7 @@ export default class Player {
       10,
       {
         isSleeping: true,
+        inertia: Infinity,
       }
     );
 
@@ -63,13 +63,10 @@ export default class Player {
   }
 
   syncCharAndFloor() {
-    Matter.Body.setPosition(
-      this.characterFloor,
-      Matter.Vector.create(
-        this.physicalBody.position.x,
-        this.characterFloor.position.y
-      )
-    );
+    Matter.Body.setPosition(this.characterFloor, {
+      x: this.physicalBody.position.x,
+      y: this.characterFloor.position.y,
+    });
   }
 
   setDirectionX(directionX) {
@@ -89,8 +86,8 @@ export default class Player {
   jump() {
     if (!this.jumping) {
       Matter.Body.setVelocity(this.physicalBody, {
-        x: this.directionX ? (this.directionX === "left" ? -10 : 10) : 0,
-        y: -15,
+        x: this.physicalBody.velocity.x,
+        y: -config.player.JUMP_SPEED,
       });
       window.requestAnimationFrame(() => {
         this.jumping = true;
@@ -110,34 +107,55 @@ export default class Player {
   }
 
   processMovement() {
-    if (!this.directionX || !this.directionY) this.isMoving = false;
+    if (!this.directionX || !this.directionY) {
+      if (!this.jumping)
+        Matter.Body.setVelocity(this.physicalBody, {
+          x: 0,
+          y: this.physicalBody.velocity.y,
+        });
+      this.isMoving = false;
+    }
 
     if (!this.isMoving) this.isMoving = true;
 
     if (!this.jumping && this.isMoving) {
       if (this.directionX === "right") {
-        this.physicalBody.position.x += 1;
+        Matter.Body.setVelocity(this.physicalBody, {
+          x: config.player.WALK_SPEED,
+          y: this.physicalBody.velocity.y,
+        });
       } else if (this.directionX === "left") {
-        this.physicalBody.position.x -= 1;
+        Matter.Body.setVelocity(this.physicalBody, {
+          x: -config.player.WALK_SPEED,
+          y: this.physicalBody.velocity.y,
+        });
       }
 
-      if (this.directionY) {
+      if (this.directionY && !this.jumping) {
         const floor = this.characterFloor;
+        floor.isSleeping = false;
 
-        if (floor) {
-          if (
-            this.directionY === "up" &&
-            floor.position.y > window.innerHeight * 0.6
-          ) {
-            floor.force.y += -0.3;
-          } else if (
-            this.directionY === "down" &&
-            floor.position.y < window.innerHeight - 70
-          ) {
-            floor.force.y += 0.2;
-            this.physicalBody.force.y += 0.1;
-          }
+        if (this.directionY === "up") {
+          Matter.Body.setVelocity(floor, {
+            x: this.physicalBody.velocity.x,
+            y: -config.player.WALK_SPEED_UP,
+          });
+        } else if (this.directionY === "down") {
+          Matter.Body.setVelocity(this.physicalBody, {
+            x: this.physicalBody.velocity.x,
+            y: config.player.WALK_SPEED_DOWN,
+          });
+          Matter.Body.setVelocity(floor, {
+            x: this.physicalBody.velocity.x,
+            y: config.player.WALK_SPEED_DOWN,
+          });
         }
+      } else {
+        this.characterFloor.isSleeping = true;
+        Matter.Body.setVelocity(this.characterFloor, {
+          x: this.physicalBody.velocity.x,
+          y: 0,
+        });
       }
     }
   }

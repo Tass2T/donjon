@@ -8,8 +8,9 @@ export default class Level {
   physicEngine: Matter.Engine;
   player: Player;
   bounds: Array<Matter.Body>;
-  showBounds: Boolean = false;
+  showBounds: Boolean;
   constructor() {
+    this.showBounds = config.SHOW_BOUND;
     this.container = new PIXI.Container();
     this.initPhysicEngine();
     this.initBounds();
