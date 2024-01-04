@@ -14,6 +14,8 @@ export default class Player {
   isMoving: Boolean = false;
   characterFloor: Matter.Body;
   spriteSheet: PIXI.Spritesheet;
+  anim: "idle" | "walk" | "jump" | "attack";
+  nextAnim: "idle" | "walk" | "jump" | "attack";
 
   constructor(physicEngine: Matter.Engine, parentContainer: PIXI.Container) {
     this.container = new PIXI.Container();
