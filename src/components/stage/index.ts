@@ -138,6 +138,32 @@ export default class Level {
     this.propsContainer.addChild(this.wallContainer);
   }
 
+  moveUnseenGroundTiles(): void {
+    this.groundContainer.children.forEach((tile) => {
+      if (tile.getGlobalPosition().x + 200 <= 0) {
+        tile.x += config.GAME_WIDTH - 200;
+        tile.zIndex = tile.zIndex + 10000;
+
+        this.groundContainer.updateTransform();
+      }
+    });
+  }
+
+  moveUnseenWalls(): void {
+    this.wallContainer.children.forEach((wallSprite) => {
+      if (wallSprite.getGlobalPosition().x + 500 <= 0) {
+        wallSprite.x += config.GAME_WIDTH;
+      }
+    });
+  }
+
+  moveProps = (): boolean => {
+    this.propsContainer.x -= 5;
+    this.moveUnseenGroundTiles();
+    this.moveUnseenWalls();
+    return true;
+  };
+
   processInput(inputs: Array<String>) {
     const processKeys: Array<String> = [];
 
