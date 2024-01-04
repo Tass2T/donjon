@@ -88,17 +88,10 @@ export default class Player {
 
   jump() {
     if (!this.jumping) {
-      Matter.Body.setPosition(
-        this.physicalBody,
-        Matter.Vector.create(
-          this.directionX === "left"
-            ? -0.1
-            : this.directionX === "right"
-            ? 0.1
-            : 0,
-          -0.5
-        )
-      );
+      Matter.Body.setVelocity(this.physicalBody, {
+        x: this.directionX ? (this.directionX === "left" ? -10 : 10) : 0,
+        y: -15,
+      });
       window.requestAnimationFrame(() => {
         this.jumping = true;
       });
