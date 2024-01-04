@@ -6,6 +6,9 @@ import { loadBundle } from "../../utils/loaderUtils.js";
 
 export default class Level {
   container: PIXI.Container;
+  propsContainer: PIXI.Container;
+  groundContainer: PIXI.Container;
+  wallContainer: PIXI.Container;
   physicEngine: Matter.Engine;
   player: Player;
   bounds: Array<Matter.Body>;
@@ -14,6 +17,9 @@ export default class Level {
   constructor() {
     this.showBounds = config.SHOW_BOUND;
     this.container = new PIXI.Container();
+    this.wallContainer = new PIXI.Container();
+    this.groundContainer = new PIXI.Container();
+    this.propsContainer = new PIXI.Container();
     this.initPhysicEngine();
     this.initBounds();
     this.player = new Player(this.physicEngine, this.container);
@@ -85,6 +91,51 @@ export default class Level {
     sprite.height = config.GAME_HEIGHT;
     sprite.width = config.GAME_WIDTH;
     this.container.addChild(sprite);
+    this.prepareProps();
+  }
+
+  prepareProps(): void {
+    this.setWalls();
+    this.setGround();
+    this.container.addChild(this.propsContainer);
+    this.propsContainer.x -= 50;
+  }
+
+  async setGround(): Promise<void> {
+    const nbOfLine = 4;
+    const groundOffset = config.GAME_HEIGHT * 0.72;
+
+    for (let j = 0; j < nbOfLine; j++) {
+      let num = 1 + j;
+      for (let i = 0; i <= config.GAME_WIDTH + 450; i += 150) {
+        const groundSprite = PIXI.Sprite.from(
+          // @ts-ignore
+          num % 2 === 0 ? this.textures.floor1 : this.textures.floor2
+        );
+        groundSprite.x = i - j * 50;
+        groundSprite.y = groundOffset + j * 43;
+        groundSprite.width = 200;
+        groundSprite.height = 200;
+        groundSprite.zIndex = i;
+        this.groundContainer?.addChild(groundSprite);
+        num++;
+      }
+    }
+    this.propsContainer.addChild(this.groundContainer);
+  }
+
+  setWalls(): void {
+    const wallTexture = PIXI.Texture.from("wall/wall.png");
+
+    for (let i = 0; i <= config.GAME_WIDTH; i += 500) {
+      const wallSprite = PIXI.Sprite.from(wallTexture);
+      wallSprite.x = i + 50;
+      wallSprite.height = config.GAME_HEIGHT;
+      wallSprite.width = 500;
+      this.wallContainer.addChild(wallSprite);
+    }
+
+    this.propsContainer.addChild(this.wallContainer);
   }
 
   processInput(inputs: Array<String>) {

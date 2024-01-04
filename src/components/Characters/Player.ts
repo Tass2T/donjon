@@ -84,7 +84,7 @@ export default class Player {
   }
 
   jump() {
-    if (!this.jumping) {
+    if (!this.jumping && !this.directionY) {
       Matter.Body.setVelocity(this.physicalBody, {
         x: this.physicalBody.velocity.x,
         y: -config.player.JUMP_SPEED,
