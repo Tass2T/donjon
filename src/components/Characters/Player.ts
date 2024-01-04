@@ -6,27 +6,55 @@ export default class Player {
   container: PIXI.Container;
   physicalBody: Matter.Body;
   physicEngine: Matter.Engine;
-  visualBody: PIXI.Graphics;
+  animatedSprite: PIXI.AnimatedSprite;
   jumping: boolean;
   directionX: "right" | "left" | null = null;
   directionY: "up" | "down" | null = null;
   spriteDirection: "left" | "right";
   isMoving: Boolean = false;
   characterFloor: Matter.Body;
+  spriteSheet: PIXI.Spritesheet;
   constructor(physicEngine: Matter.Engine, parentContainer: PIXI.Container) {
     this.container = new PIXI.Container();
     this.jumping = false;
     this.physicEngine = physicEngine;
-    this.initVisualBody();
+    this.prepareSprites();
+
+    parentContainer.addChild(this.container);
+  }
+
+  async prepareSprites() {
+    this.spriteSheet = await PIXI.Assets.load("characters/adventurer.json");
+
+    if (this.spriteSheet) {
+      this.animatedSprite = new PIXI.AnimatedSprite(
+        // @ts-ignore
+        this.spriteSheet.animations["idle"]
+      );
+
+      this.animatedSprite.animationSpeed = 0.1;
+      this.animatedSprite.anchor.set(0.5, 1);
+      this.animatedSprite.x = 200;
+      this.animatedSprite.y = config.GAME_HEIGHT * 0.7;
+
+      this.container.addChild(this.animatedSprite);
+      this.animatedSprite.play();
+
+      this.setPhysicalBody();
+    }
+  }
+
+  setPhysicalBody() {
     const position = this.container.getLocalBounds();
 
     this.physicalBody = Matter.Bodies.rectangle(
-      300,
-      window.innerHeight * 0.6,
-      position.width,
-      position.height,
+      this.animatedSprite.x,
+      this.animatedSprite.y,
+      this.animatedSprite.width,
+      this.animatedSprite.height,
       {
         mass: 10,
+        density: 10,
         inertia: Infinity,
       }
     );
@@ -48,20 +76,11 @@ export default class Player {
     ]);
 
     this.syncAssetsWithPhysicalBodies();
-
-    parentContainer.addChild(this.container);
-  }
-
-  initVisualBody() {
-    this.visualBody = new PIXI.Graphics();
-    this.visualBody.beginFill(0xff00ff);
-    this.visualBody.drawRect(0, 0, 50, 50);
-    this.container.addChild(this.visualBody);
   }
 
   syncAssetsWithPhysicalBodies() {
-    this.visualBody.x = this.physicalBody.position.x;
-    this.visualBody.y = this.physicalBody.position.y;
+    this.animatedSprite.x = this.physicalBody.position.x;
+    this.animatedSprite.y = this.physicalBody.position.y;
   }
 
   syncCharAndFloor() {
@@ -87,9 +106,8 @@ export default class Player {
 
   isInBound() {
     return this.directionY === "up"
-      ? this.visualBody.position.y > config.GAME_HEIGHT * 0.7
-      : this.visualBody.position.y + this.visualBody.height + 10 <
-          config.GAME_HEIGHT * 0.93;
+      ? this.animatedSprite.position.y > config.GAME_HEIGHT * 0.77
+      : this.animatedSprite.position.y < config.GAME_HEIGHT * 0.94;
   }
 
   jump() {
@@ -145,6 +163,10 @@ export default class Player {
         floor.isSleeping = false;
 
         if (this.directionY === "up") {
+          Matter.Body.setVelocity(this.physicalBody, {
+            x: this.physicalBody.velocity.x,
+            y: 0.5,
+          });
           Matter.Body.setVelocity(floor, {
             x: this.physicalBody.velocity.x,
             y: -config.player.WALK_SPEED_UP,
@@ -152,7 +174,7 @@ export default class Player {
         } else if (this.directionY === "down") {
           Matter.Body.setVelocity(this.physicalBody, {
             x: this.physicalBody.velocity.x,
-            y: config.player.WALK_SPEED_DOWN,
+            y: 4,
           });
           Matter.Body.setVelocity(floor, {
             x: this.physicalBody.velocity.x,
@@ -170,11 +192,13 @@ export default class Player {
   }
 
   update() {
-    this.syncCharAndFloor();
-    this.processMovement();
-    this.syncAssetsWithPhysicalBodies();
-    if (this.jumping) {
-      this.checkIfIsStillJumping();
+    if (this.animatedSprite) {
+      this.syncCharAndFloor();
+      this.processMovement();
+      this.syncAssetsWithPhysicalBodies();
+      if (this.jumping) {
+        this.checkIfIsStillJumping();
+      }
     }
   }
 }
