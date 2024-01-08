@@ -94,12 +94,10 @@ export default class Player {
   }
 
   setDirectionX(directionX) {
-    if (this.directionX || this.directionY) this.isMoving = true;
     this.directionX = directionX;
   }
 
   setDirectionY(directionY) {
-    if (this.directionX || this.directionY) this.isMoving = true;
     this.directionY = directionY;
   }
 
@@ -161,6 +159,7 @@ export default class Player {
         });
         if (!this.isMoving) {
           this.animatedSprite.textures = this.spriteSheet.animations["walk"];
+          this.animatedSprite.scale.x = 1;
           this.animatedSprite.play();
           this.isMoving = true;
         }
@@ -169,6 +168,12 @@ export default class Player {
           x: -config.player.WALK_SPEED,
           y: this.physicalBody.velocity.y,
         });
+        if (!this.isMoving) {
+          this.animatedSprite.textures = this.spriteSheet.animations["walk"];
+          this.animatedSprite.scale.x = -1;
+          this.animatedSprite.play();
+          this.isMoving = true;
+        }
       }
 
       if (this.directionY && this.isInBound()) {
