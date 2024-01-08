@@ -164,22 +164,6 @@ export default class Level {
     return true;
   };
 
-  resolveAnimation() {
-    if (this.player.directionX !== this.player.nextDirectionX) {
-      this.player.animatedSprite.scale.x *= -1;
-    }
-
-    if (this.player.nextAnim !== this.player.anim) {
-      this.player.animatedSprite.textures =
-        // @ts-ignore
-        this.player.spriteSheet?.animations[this.player.nextAnim];
-      this.player.animatedSprite.play();
-    }
-
-    this.player.directionX = this.player.nextDirectionX;
-    this.player.anim = this.player.nextAnim;
-  }
-
   processInput(inputs: Array<String>) {
     const processKeys: Array<String> = [];
 
@@ -198,17 +182,17 @@ export default class Level {
           }
           break;
         case "KeyA":
-          if (!processKeys.includes("KeyA")) {
+          if (!processKeys.includes("KeyQ")) {
             this.player.setDirectionX("left");
           }
           break;
         case "KeyW":
-          if (!processKeys.includes("KeyS")) {
+          if (!processKeys.includes("KeyZ")) {
             this.player.setDirectionY("up");
           }
           break;
         case "KeyS":
-          if (!processKeys.includes("KeyW")) {
+          if (!processKeys.includes("KeyS")) {
             this.player.setDirectionY("down");
           }
           break;
