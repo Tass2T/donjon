@@ -143,17 +143,25 @@ export default class Player {
           x: 0,
           y: this.physicalBody.velocity.y,
         });
-      this.isMoving = false;
+
+      if (this.isMoving) {
+        this.isMoving = false;
+        this.animatedSprite.textures = this.spriteSheet.animations["idle"];
+        this.animatedSprite.play();
+      }
     }
 
-    if (!this.isMoving) this.isMoving = true;
-
-    if (!this.jumping && this.isMoving) {
+    if (!this.jumping) {
       if (this.directionX === "right") {
         Matter.Body.setVelocity(this.physicalBody, {
           x: config.player.WALK_SPEED,
           y: this.physicalBody.velocity.y,
         });
+        if (!this.isMoving) {
+          this.animatedSprite.textures = this.spriteSheet.animations["walk"];
+          this.animatedSprite.play();
+          this.isMoving = true;
+        }
       } else if (this.directionX === "left") {
         Matter.Body.setVelocity(this.physicalBody, {
           x: -config.player.WALK_SPEED,
