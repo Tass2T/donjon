@@ -137,18 +137,20 @@ export default class Player {
   }
 
   processMovement() {
-    if (!this.directionX || !this.directionY) {
-      if (!this.jumping)
+    if (!this.directionX && !this.directionY) {
+      if (!this.jumping) {
         Matter.Body.setVelocity(this.physicalBody, {
           x: 0,
           y: this.physicalBody.velocity.y,
         });
 
-      if (this.isMoving) {
-        this.isMoving = false;
-        this.animatedSprite.textures = this.spriteSheet.animations["idle"];
-        this.animatedSprite.play();
+        if (this.isMoving) {
+          this.isMoving = false;
+          this.animatedSprite.textures = this.spriteSheet.animations["idle"];
+          this.animatedSprite.play();
+        }
       }
+      this.characterFloor.isSleeping = true;
     }
 
     if (!this.jumping) {
@@ -169,7 +171,7 @@ export default class Player {
         });
       }
 
-      if (this.directionY && !this.jumping && this.isInBound()) {
+      if (this.directionY && this.isInBound()) {
         const floor = this.characterFloor;
         floor.isSleeping = false;
 
@@ -182,7 +184,8 @@ export default class Player {
             x: this.physicalBody.velocity.x,
             y: -config.player.WALK_SPEED_UP,
           });
-        } else if (this.directionY === "down") {
+          if (!this.isMoving) this.isMoving = true;
+        } else {
           Matter.Body.setVelocity(this.physicalBody, {
             x: this.physicalBody.velocity.x,
             y: 4,
@@ -191,6 +194,7 @@ export default class Player {
             x: this.physicalBody.velocity.x,
             y: config.player.WALK_SPEED_DOWN,
           });
+          if (!this.isMoving) this.isMoving = true;
         }
       } else {
         this.characterFloor.isSleeping = true;
