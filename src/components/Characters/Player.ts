@@ -129,11 +129,6 @@ export default class Player {
     }
   }
 
-  resetDirections() {
-    this.directionX = null;
-    this.directionY = null;
-  }
-
   processMovement() {
     if (!this.directionX && !this.directionY) {
       if (!this.jumping) {
@@ -159,10 +154,10 @@ export default class Player {
         });
         if (!this.isMoving) {
           this.animatedSprite.textures = this.spriteSheet.animations["walk"];
-          this.animatedSprite.scale.x = 1;
           this.animatedSprite.play();
           this.isMoving = true;
         }
+        this.animatedSprite.scale.x = 1;
       } else if (this.directionX === "left") {
         Matter.Body.setVelocity(this.physicalBody, {
           x: -config.player.WALK_SPEED,
@@ -170,10 +165,10 @@ export default class Player {
         });
         if (!this.isMoving) {
           this.animatedSprite.textures = this.spriteSheet.animations["walk"];
-          this.animatedSprite.scale.x = -1;
           this.animatedSprite.play();
           this.isMoving = true;
         }
+        this.animatedSprite.scale.x = -1;
       }
 
       if (this.directionY && this.isInBound()) {
@@ -187,9 +182,15 @@ export default class Player {
           });
           Matter.Body.setVelocity(floor, {
             x: this.physicalBody.velocity.x,
-            y: -config.player.WALK_SPEED_UP,
+            y: -config.player.WALK_SPEED_UP + 1,
           });
-          if (!this.isMoving) this.isMoving = true;
+          if (!this.isMoving) {
+            this.animatedSprite.textures = this.spriteSheet.animations["walk"];
+            this.animatedSprite.scale.x =
+              this.animatedSprite.scale.x > 0 ? 1 : -1;
+            this.animatedSprite.play();
+            this.isMoving = true;
+          }
         } else {
           Matter.Body.setVelocity(this.physicalBody, {
             x: this.physicalBody.velocity.x,
@@ -199,7 +200,13 @@ export default class Player {
             x: this.physicalBody.velocity.x,
             y: config.player.WALK_SPEED_DOWN,
           });
-          if (!this.isMoving) this.isMoving = true;
+          if (!this.isMoving) {
+            this.animatedSprite.textures = this.spriteSheet.animations["walk"];
+            this.animatedSprite.scale.x =
+              this.animatedSprite.scale.x > 0 ? 1 : -1;
+            this.animatedSprite.play();
+            this.isMoving = true;
+          }
         }
       } else {
         this.characterFloor.isSleeping = true;

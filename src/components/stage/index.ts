@@ -167,10 +167,6 @@ export default class Level {
   processInput(inputs: Array<String>) {
     const processKeys: Array<String> = [];
 
-    if (!inputs.length) {
-      this.player.resetDirections();
-    }
-
     inputs.forEach((input) => {
       switch (input) {
         case "Space":
